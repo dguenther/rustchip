@@ -327,6 +327,31 @@ fn set_Vx_to_rand_AND_NN() {
 }
 
 #[test]
+fn draw_sprite() {
+	// 0xDxyh
+	let mut test = ::cpu::Cpu::new();
+	let rom = [0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
+	test.V[1] = 4;
+	test.V[2] = 5;
+	test.I = 0x204;
+	test.load_vec(rom);
+	test.cycle();
+	assert!(test.graphics[4 * 4 + 5 * 64 * 4] == 255);
+	assert!(test.graphics[5 * 4 + 5 * 64 * 4] == 0);
+	assert!(test.graphics[6 * 4 + 5 * 64 * 4] == 255);
+	assert!(test.graphics[4 * 4 + 6 * 64 * 4] == 255);
+	assert!(test.graphics[5 * 4 + 6 * 64 * 4] == 255);
+
+	test.pc = 0x200;
+	test.cycle();
+	assert!(test.graphics[4 * 4 + 5 * 64 * 4] == 0);
+	assert!(test.graphics[5 * 4 + 5 * 64 * 4] == 0);
+	assert!(test.graphics[6 * 4 + 5 * 64 * 4] == 0);
+	assert!(test.graphics[4 * 4 + 6 * 64 * 4] == 0);
+	assert!(test.graphics[5 * 4 + 6 * 64 * 4] == 0);	
+}
+
+#[test]
 fn skip_if_key_is_pressed() {
 	// 0xEx9E
 	let mut test = ::cpu::Cpu::new();
