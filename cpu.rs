@@ -7,9 +7,7 @@ use rsfml::graphics::sprite::Sprite;
 use rsfml::graphics::color::Color;
 
 use std::path::Path;
-use std::rt::io::{Open};
-use std::rt::io::file::FileInfo;
-use std::rt::io::extensions::ReaderUtil;
+use std::rt::io::fs::File;
 use std::rand;
 use std::rand::Rng;
 
@@ -111,10 +109,7 @@ impl Cpu {
 	pub fn load(&mut self, filename: &str)
 	{ 	 
 		let f = &Path::new(filename);
-		let r = match f.open_reader(Open) {
-			Some(s) => s,
-			None => fail!()
-		};
+		let r = File::open(f);
 		let mut i = 0x200;
 		for byte in r.bytes() {
 			self.memory[i] = byte;
