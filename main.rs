@@ -40,6 +40,7 @@ fn main() {
         }
 		system.cycle();
         system.draw(&mut window);
+        system.update_keys();
     }
 
 }

@@ -5,6 +5,7 @@ use rsfml::graphics::image::Image;
 use rsfml::graphics::texture::Texture;
 use rsfml::graphics::sprite::Sprite;
 use rsfml::graphics::color::Color;
+use rsfml::window::keyboard;
 
 use std::path::Path;
 use std::rt::io::fs::File;
@@ -164,6 +165,25 @@ impl Cpu {
 			// reset draw flag
 			self.draw_flag = false;
 		}
+	}
+
+	pub fn update_keys(&mut self) {
+		self.keys[1] = keyboard::is_key_pressed(keyboard::Num1).to_bit();
+		self.keys[2] = keyboard::is_key_pressed(keyboard::Num2).to_bit();
+		self.keys[3] = keyboard::is_key_pressed(keyboard::Num3).to_bit();
+		self.keys[0xC] = keyboard::is_key_pressed(keyboard::Num4).to_bit();
+		self.keys[4] = keyboard::is_key_pressed(keyboard::Q).to_bit();
+		self.keys[5] = keyboard::is_key_pressed(keyboard::W).to_bit();
+		self.keys[6] = keyboard::is_key_pressed(keyboard::E).to_bit();
+		self.keys[0xD] = keyboard::is_key_pressed(keyboard::R).to_bit();
+		self.keys[7] = keyboard::is_key_pressed(keyboard::A).to_bit();
+		self.keys[8] = keyboard::is_key_pressed(keyboard::S).to_bit();
+		self.keys[9] = keyboard::is_key_pressed(keyboard::D).to_bit();
+		self.keys[0xE] = keyboard::is_key_pressed(keyboard::F).to_bit();
+		self.keys[0xA] = keyboard::is_key_pressed(keyboard::Z).to_bit();
+		self.keys[0] = keyboard::is_key_pressed(keyboard::X).to_bit();
+		self.keys[0xB] = keyboard::is_key_pressed(keyboard::C).to_bit();
+		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V).to_bit();
 	}
 
 	pub fn cycle(&mut self)
