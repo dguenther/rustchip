@@ -242,11 +242,11 @@ impl Cpu {
 			}
 			(8, x, y, 5) => { 
 				/* Subtracts Vy from Vx */
-				if (self.V[y] > self.V[x]) {
+				if (self.V[x] > self.V[y]) {
 					// set borrow
-					self.V[0xF] = 0;
-				} else {
 					self.V[0xF] = 1;
+				} else {
+					self.V[0xF] = 0;
 				}
 				self.V[x] -= self.V[y];
 				self.pc += 2;
@@ -259,11 +259,11 @@ impl Cpu {
 				self.pc += 2;
 			}
 			(8, x, y, 7) => { /* Sets Vx to Vy minus Vx */ 
-				if (self.V[x] > self.V[y]) {
+				if (self.V[y] > self.V[x]) {
 					// set borrow
-					self.V[0xF] = 0;
-				} else {
 					self.V[0xF] = 1;
+				} else {
+					self.V[0xF] = 0;
 				}
 				self.V[x] = self.V[y] - self.V[x];
 				self.pc += 2;
@@ -300,7 +300,7 @@ impl Cpu {
 					pixel = self.memory[self.I + y_draw as u16];
 					for x_draw in range(0, 8) {
 						if (pixel & (0x80 >> x_draw) != 0) {
-							let calc = (x as int) + x_draw * 4 + ((y as int + y_draw as int) * 64 * 4);
+							let calc = (self.V[x] as int) + x_draw * 4 + ((self.V[y] as int + y_draw as int) * 64 * 4);
 							if (self.graphics[calc] == 255) {
 								// Collision detection
 								self.V[0xF] = 1;
