@@ -180,7 +180,7 @@ impl Cpu {
 		let opTuple = ((self.opcode & 0xF000) >> 12, (self.opcode & 0x0F00) >> 8, (self.opcode & 0x00F0) >> 4, self.opcode & 0x000F);
 
 		println!("{:?}", opTuple);
-		
+
 		match opTuple {
 			(0, 0, 0xE, 0)   => { 
 				/* Clear screen */ 
@@ -296,11 +296,12 @@ impl Cpu {
 				/* Draws a sprite at (Vx, Vy) with width of 8 and height of N pixels */
 				let mut pixel: u8;
 				self.V[0xF] = 0;
+				println!("Vx, Vy: {:?} {:?}", self.V[x], self.V[y]);
 				for y_draw in range(0, h) {
 					pixel = self.memory[self.I + y_draw as u16];
 					for x_draw in range(0, 8) {
 						if (pixel & (0x80 >> x_draw) != 0) {
-							let calc = (self.V[x] as int) + x_draw * 4 + ((self.V[y] as int + y_draw as int) * 64 * 4);
+							let calc = (self.V[x] as int) * 4 + x_draw * 4 + ((self.V[y] as int + y_draw as int) * 64 * 4);
 							if (self.graphics[calc] == 255) {
 								// Collision detection
 								self.V[0xF] = 1;
