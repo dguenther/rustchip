@@ -362,7 +362,7 @@ impl Cpu {
 			}
 			(0xF, x, 5, 5) => { 
 				/* Stores V0 to Vx in memory starting at address I */
-				for i in range(0, x) {
+				for i in range(0, x + 1) {
 					self.memory[self.I + i] = self.V[i];
 				}
 				self.pc += 2;
