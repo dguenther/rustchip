@@ -3,6 +3,8 @@ extern mod rsfml;
 use rsfml::window::{ContextSettings, VideoMode, event};
 use rsfml::graphics::{RenderWindow, sfClose};
 
+use std::os::args;
+
 mod cpu;
 
 #[cfg(target_os="macos")]
@@ -12,6 +14,11 @@ fn start(argc: int, argv: **u8) -> int {
 }
 
 fn main() {
+    let arg_list = args();
+    if (arg_list.len() <= 1) {
+        fail!("You must pass in a ROM for rustchip to read.");
+    }
+
     // Create the window of the application
     let setting = ContextSettings::default();
     let mut window = match RenderWindow::new(VideoMode::new_init(320, 160, 32), ~"rustchip", sfClose, &setting) {
@@ -21,8 +28,7 @@ fn main() {
     window.set_framerate_limit(60);
 	let mut system = ::cpu::Cpu::new();
 
-	system.load("/Users/derekguenther/Downloads/c8games/TETRIS");
-	//system.print_mem();
+	system.load(arg_list[1]);
 
     while window.is_open() {
         loop {
