@@ -178,9 +178,9 @@ impl Cpu {
 		
 		// Decode/Execute Opcode
 		let opTuple = ((self.opcode & 0xF000) >> 12, (self.opcode & 0x0F00) >> 8, (self.opcode & 0x00F0) >> 4, self.opcode & 0x000F);
-		
 
 		println!("{:?}", opTuple);
+		
 		match opTuple {
 			(0, 0, 0xE, 0)   => { 
 				/* Clear screen */ 
@@ -295,11 +295,9 @@ impl Cpu {
 			(0xD, x, y, h) => { 
 				/* Draws a sprite at (Vx, Vy) with width of 8 and height of N pixels */
 				let mut pixel: u8;
-				println("pixel info");
 				self.V[0xF] = 0;
 				for y_draw in range(0, h) {
 					pixel = self.memory[self.I + y_draw as u16];
-					println!("{:?}", pixel);
 					for x_draw in range(0, 8) {
 						if (pixel & (0x80 >> x_draw) != 0) {
 							let calc = (x as int) + x_draw * 4 + ((y as int + y_draw as int) * 64 * 4);
@@ -371,7 +369,7 @@ impl Cpu {
 			}
 			(0xF, x, 6, 5) => { 
 				/* Fills V0 to Vx from memory starting at address I */
-				for i in range(0, x) {
+				for i in range(0, x + 1) {
 					self.V[i] = self.memory[self.I + i];
 				}
 				self.pc += 2;
