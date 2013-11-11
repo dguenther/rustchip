@@ -154,7 +154,7 @@ impl Cpu {
 				Some(s) => s,
 				None => fail!("Couldn't create sprite from texture")
 			};
-			sprite.scale2f(5f32, 5f32);
+			sprite.scale2f(10f32, 10f32);
 			window.clear(&Color::black());
 			window.draw(&sprite);
 			window.display();
@@ -191,7 +191,7 @@ impl Cpu {
 		// Decode/Execute Opcode
 		let opTuple = ((self.opcode & 0xF000) >> 12, (self.opcode & 0x0F00) >> 8, (self.opcode & 0x00F0) >> 4, self.opcode & 0x000F);
 
-		println!("{:?}", opTuple);
+		debug!("{:?}", opTuple);
 
 		match opTuple {
 			(0, 0, 0xE, 0)   => { 
@@ -309,10 +309,10 @@ impl Cpu {
 				let mut pixel: u8;
 				self.V[0xF] = 0;
 				for y_draw in range(0, h) {
-					pixel = self.memory[self.I + y_draw as u16];
+					pixel = self.memory[self.I + y_draw];
 					for x_draw in range(0, 8) {
 						if (pixel & (0x80 >> x_draw) != 0) {
-							let calc = (self.V[x] as int) + x_draw + ((self.V[y] as int + y_draw as int) * 64);
+							let calc = ((self.V[x] as int + x_draw) % 64) + (((self.V[y] as int + y_draw as int) % 32) * 64);
 							if (self.graphics[calc] == 1) {
 								// Collision detection
 								self.V[0xF] = 1;

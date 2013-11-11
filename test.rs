@@ -357,10 +357,10 @@ fn draw_sprite() {
 	test.load_vec(rom);
 	test.cycle();
 	assert!(test.graphics[63 + 31 * 64] == 1);
-	assert!(test.graphics[64 + 31 * 64] == 0);
-	assert!(test.graphics[65 + 31 * 64] == 1);
-	assert!(test.graphics[63 + 32 * 64] == 1);
-	assert!(test.graphics[64 + 32 * 64] == 1);
+	assert!(test.graphics[0 + 31 * 64] == 0);
+	assert!(test.graphics[1 + 31 * 64] == 1);
+	assert!(test.graphics[63 + 0 * 64] == 1);
+	assert!(test.graphics[0 + 0 * 64] == 1);
 }
 
 #[test]
