@@ -32,8 +32,7 @@ struct Cpu {
 	pc: u16,
 
 	// Black and white, 64 x 32 screen
-	// 4 u8s per pixel to represent 32 bit rgba pixels for sfml
-	graphics: ~[u8],
+	graphics: [u8, ..64 * 32],
 
 	// Timer registers
 	delay_timer: u8,
@@ -62,7 +61,7 @@ impl Cpu {
 			I: 0,
 			sp: 0,
 
-			graphics: ~[0, ..64 * 32 * 4],
+			graphics: [0, ..64 * 32],
 			stack: [0, ..16],
 			V: [0, ..16],
 			memory: [0, ..4096],
@@ -128,7 +127,7 @@ impl Cpu {
 	}
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
-		/*
+		
 		let mut gfx = ~[0u8, ..64 * 32 * 4];
 		for i in range(0, 64 * 32) {
 			let mut value = self.graphics[i];
@@ -140,11 +139,9 @@ impl Cpu {
 			gfx[mult + 1] = value;
 			gfx[mult + 2] = value;
 			gfx[mult + 3] = value;
-
 		}
-		*/
+		
 		if (self.draw_flag) {
-			let gfx = self.graphics.to_owned();
 			let img = match Image::create_from_pixels(64, 32, gfx) {
 				Some(s) => s,
 				None => fail!("Couldn't create image from pixel array")
@@ -199,7 +196,7 @@ impl Cpu {
 		match opTuple {
 			(0, 0, 0xE, 0)   => { 
 				/* Clear screen */ 
-				self.graphics = ~[0, ..64 * 32 * 4];
+				self.graphics = [0, ..64 * 32];
 				self.draw_flag = true;
 				self.pc += 2;
 			}
@@ -311,20 +308,16 @@ impl Cpu {
 				/* Draws a sprite at (Vx, Vy) with width of 8 and height of N pixels */
 				let mut pixel: u8;
 				self.V[0xF] = 0;
-				println!("Vx, Vy: {:?} {:?}", self.V[x], self.V[y]);
 				for y_draw in range(0, h) {
 					pixel = self.memory[self.I + y_draw as u16];
 					for x_draw in range(0, 8) {
 						if (pixel & (0x80 >> x_draw) != 0) {
-							let calc = (self.V[x] as int) * 4 + x_draw * 4 + ((self.V[y] as int + y_draw as int) * 64 * 4);
-							if (self.graphics[calc] == 255) {
+							let calc = (self.V[x] as int) + x_draw + ((self.V[y] as int + y_draw as int) * 64);
+							if (self.graphics[calc] == 1) {
 								// Collision detection
 								self.V[0xF] = 1;
 							}
-							self.graphics[calc] ^= 255;
-							self.graphics[calc + 1] ^= 255;
-							self.graphics[calc + 2] ^= 255;
-							self.graphics[calc + 3] ^= 255;
+							self.graphics[calc] ^= 1;
 						}	
 					}
 				}

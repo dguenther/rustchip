@@ -7,11 +7,11 @@ fn clear_screen() {
 	// 0x00E0
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x00, 0xE0];
-	test.graphics = ~[1, ..64 * 32 * 4];
+	test.graphics = [1, ..64 * 32];
 	test.load_vec(rom);
 	test.cycle();
 	assert!(test.draw_flag == true);
-	assert!(test.graphics == ~[0, ..64 * 32 * 4]);
+	assert!(test.graphics == [0, ..64 * 32]);
 }
 
 #[test]
@@ -336,19 +336,31 @@ fn draw_sprite() {
 	test.I = 0x204;
 	test.load_vec(rom);
 	test.cycle();
-	assert!(test.graphics[4 * 4 + 5 * 64 * 4] == 255);
-	assert!(test.graphics[5 * 4 + 5 * 64 * 4] == 0);
-	assert!(test.graphics[6 * 4 + 5 * 64 * 4] == 255);
-	assert!(test.graphics[4 * 4 + 6 * 64 * 4] == 255);
-	assert!(test.graphics[5 * 4 + 6 * 64 * 4] == 255);
+	assert!(test.graphics[4 + 5 * 64] == 1);
+	assert!(test.graphics[5 + 5 * 64] == 0);
+	assert!(test.graphics[6 + 5 * 64] == 1);
+	assert!(test.graphics[4 + 6 * 64] == 1);
+	assert!(test.graphics[5 + 6 * 64] == 1);
 
 	test.pc = 0x200;
 	test.cycle();
-	assert!(test.graphics[4 * 4 + 5 * 64 * 4] == 0);
-	assert!(test.graphics[5 * 4 + 5 * 64 * 4] == 0);
-	assert!(test.graphics[6 * 4 + 5 * 64 * 4] == 0);
-	assert!(test.graphics[4 * 4 + 6 * 64 * 4] == 0);
-	assert!(test.graphics[5 * 4 + 6 * 64 * 4] == 0);	
+	assert!(test.graphics[4 + 5 * 64] == 0);
+	assert!(test.graphics[5 + 5 * 64] == 0);
+	assert!(test.graphics[6 + 5 * 64] == 0);
+	assert!(test.graphics[4 + 6 * 64] == 0);
+	assert!(test.graphics[5 + 6 * 64] == 0);
+
+	test = ::cpu::Cpu::new();
+	test.V[1] = 63;
+	test.V[2] = 31;
+	test.I = 0x204;
+	test.load_vec(rom);
+	test.cycle();
+	assert!(test.graphics[63 + 31 * 64] == 1);
+	assert!(test.graphics[64 + 31 * 64] == 0);
+	assert!(test.graphics[65 + 31 * 64] == 1);
+	assert!(test.graphics[63 + 32 * 64] == 1);
+	assert!(test.graphics[64 + 32 * 64] == 1);
 }
 
 #[test]
