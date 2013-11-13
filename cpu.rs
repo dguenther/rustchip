@@ -45,8 +45,10 @@ struct Cpu {
 	// Keys
 	keys: [u8, ..16],
 
-	// Draw flag (emulator)
-	draw_flag: bool
+	// emulator flags and values
+	draw_flag: bool,
+	wait_flag: bool,
+	wait_register: u8
 }
 
 impl Cpu {
@@ -71,7 +73,9 @@ impl Cpu {
 
 			keys: [0, ..16],
 
-			draw_flag: false
+			draw_flag: false,
+			wait_flag: false,
+			wait_register: 0,
 		};
 		initCpu.load_fontset();
 		initCpu
@@ -124,6 +128,15 @@ impl Cpu {
 			self.memory[i] = *b;
 			i += 1;
 		}
+	}
+
+	pub fn is_waiting(&mut self) -> bool {
+		return self.wait_flag;
+	}
+
+	pub fn set_wait_register(&mut self, value: u8) {
+		self.V[self.wait_register] = value;
+		self.wait_flag = false;
 	}
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
@@ -341,7 +354,12 @@ impl Cpu {
 				}
 			}
 			(0xF, x, 0, 7) => { /* Sets Vx to the value of the delay timer */ self.V[x] = self.delay_timer; self.pc += 2 }
-			(0xF, x, 0, 0xA) => { /* Wait for a key press, store the value of the key in Vx */ fail!(~"Opcode FX0A not implemented")}
+			(0xF, x, 0, 0xA) => { 
+				/* Wait for a key press, store the value of the key in Vx */ 
+				self.wait_flag = true;
+				self.wait_register = x as u8;
+				self.pc += 2;
+			}
 			(0xF, x, 1, 5) => { /* Sets delay timer to Vx */ self.delay_timer = self.V[x]; self.pc += 2 }
 			(0xF, x, 1, 8) => { /* Sets sound timer to Vx */ self.sound_timer = self.V[x]; self.pc += 2 }
 			(0xF, x, 1, 0xE) => {

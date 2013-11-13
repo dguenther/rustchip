@@ -2,6 +2,7 @@ extern mod rsfml;
 
 use rsfml::window::{ContextSettings, VideoMode, event};
 use rsfml::graphics::{RenderWindow, sfClose};
+use rsfml::window::keyboard;
 
 use std::os::args;
 
@@ -35,12 +36,41 @@ fn main() {
             match window.poll_event() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
+                event::KeyPressed{code, _} => { 
+                    if (system.is_waiting()) {
+                        let val = match code {
+                            keyboard::Num1 => 1,
+                            keyboard::Num2 => 2,
+                            keyboard::Num3 => 3,
+                            keyboard::Num4 => 0xC,
+                            keyboard::Q => 4,
+                            keyboard::W => 5,
+                            keyboard::E => 6,
+                            keyboard::R => 0xD,
+                            keyboard::A => 7,
+                            keyboard::S => 8,
+                            keyboard::D => 9,
+                            keyboard::F => 0xE,
+                            keyboard::Z => 0xA,
+                            keyboard::X => 0,
+                            keyboard::C => 0xB,
+                            keyboard::V => 0xF,
+                            _ => -1
+                        };
+                        if (val != -1) {
+                            system.set_wait_register(val);
+                        }
+                    }
+                }
                 _ => {}
             }
         }
-		system.cycle();
-        system.draw(&mut window);
-        system.update_keys();
+        
+        if (!system.is_waiting()) {
+    		system.cycle();
+            system.draw(&mut window);
+            system.update_keys();
+        }
     }
 
 }

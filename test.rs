@@ -413,6 +413,27 @@ fn set_Vx_to_delay_timer() {
 }
 
 #[test]
+fn wait_on_keypress(){
+	// 0xFx0A
+	let mut test = ::cpu::Cpu::new();
+	let rom = [0xF2, 0x0A];
+	test.load_vec(rom);
+	test.cycle();
+	assert!(test.wait_register == 2);
+	assert!(test.is_waiting());
+}
+
+#[test]
+fn continue_after_wait(){
+	// 0xFx0A
+	let mut test = ::cpu::Cpu::new();
+	test.wait_register = 2;
+	test.set_wait_register(5);
+	assert!(test.V[2] == 5);
+	assert!(!test.is_waiting());		
+}
+
+#[test]
 fn fill_V0_to_Vx_from_memory() {
 	// 0xFx65
 	let mut test = ::cpu::Cpu::new();
