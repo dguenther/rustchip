@@ -52,8 +52,7 @@ struct Cpu {
 }
 
 impl Cpu {
-	pub fn new() -> Cpu
-	{
+	pub fn new() -> Cpu {
 		let mut initCpu = Cpu {
 			// Initialize registers and memory
 
@@ -110,8 +109,7 @@ impl Cpu {
 		println!("{:?}", self.memory);
 	}
  
-	pub fn load(&mut self, filename: &str)
-	{ 	 
+	pub fn load(&mut self, filename: &str) { 	 
 		let f = &Path::new(filename);
 		let r = File::open(f);
 		let mut i = 0x200;
@@ -121,8 +119,7 @@ impl Cpu {
 		}
 	}
 
-	pub fn load_vec(&mut self, data: &[u8])
-	{
+	pub fn load_vec(&mut self, data: &[u8]) {
 		let mut i = 0x200;
 		for b in data.iter() {
 			self.memory[i] = *b;
@@ -196,8 +193,7 @@ impl Cpu {
 		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V).to_bit();
 	}
 
-	pub fn cycle(&mut self)
-	{
+	pub fn cycle(&mut self) {
 		// Fetch Opcode
 		self.opcode = self.memory[self.pc] as u16 << 8 | self.memory[self.pc + 1] as u16;
 		
@@ -207,7 +203,7 @@ impl Cpu {
 		debug!("{:?}", opTuple);
 
 		match opTuple {
-			(0, 0, 0xE, 0)   => { 
+			(0, 0, 0xE, 0) => { 
 				/* Clear screen */ 
 				self.graphics = [0, ..64 * 32];
 				self.draw_flag = true;
