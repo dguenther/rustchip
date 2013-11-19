@@ -1,7 +1,7 @@
 extern mod rsfml;
 
 use rsfml::window::{ContextSettings, VideoMode, event};
-use rsfml::graphics::{RenderWindow, sfClose};
+use rsfml::graphics::{RenderWindow, sfDefaultStyle};
 use rsfml::window::keyboard;
 
 use std::os::args;
@@ -22,7 +22,7 @@ fn main() {
 
     // Create the window of the application
     let setting = ContextSettings::default();
-    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), ~"rustchip", sfClose, &setting) {
+    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), ~"rustchip", sfDefaultStyle, &setting) {
         Some(window) => window,
         None => fail!("Cannot create a new Render Window.")
     };

@@ -8,7 +8,7 @@ use rsfml::graphics::color::Color;
 use rsfml::window::keyboard;
 
 use std::path::Path;
-use std::rt::io::fs::File;
+use std::io::fs::File;
 use std::rand;
 use std::rand::Rng;
 
