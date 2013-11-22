@@ -1,0 +1,16 @@
+#!/bin/bash
+
+git submodule update --recursive --init
+
+mkdir lib
+cd rust-sfml
+rustpkg build rsfml
+cd build/*/rsfml
+mv * ..
+cd ..
+rm -rf rsfml
+cd ..
+mv * ../../lib
+cd ..
+rm -rf build
+rm -rf .rust
