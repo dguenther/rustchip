@@ -24,7 +24,7 @@ After running `./configure`, run `rustc --test test.rs` followed by `./test` to 
 Running
 -------
 
-Run `./main <rompath>` to start the emulator. The CHIP-8 system uses a hex keypad:
+Run `./main <rompath>` to start the emulator. The CHIP-8 system uses a hex keypad, with keymappings listed below. You can reset the emulator by pressing `ALT+R`.
 
 ###### CHIP-8 Keypad -> Keyboard
 

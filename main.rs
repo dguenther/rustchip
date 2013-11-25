@@ -27,17 +27,21 @@ fn main() {
         None => fail!("Cannot create a new Render Window.")
     };
     window.set_framerate_limit(60);
-	let mut system = ::cpu::Cpu::new();
+	let mut c8 = ::cpu::Cpu::new();
 
-	system.load(arg_list[1]);
+	c8.load(arg_list[1]);
 
     while window.is_open() {
         loop {
             match window.poll_event() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
-                event::KeyPressed{code, _} => { 
-                    if (system.is_waiting()) {
+                event::KeyPressed{code, alt, _} => { 
+                    if (code == keyboard::R && alt) {
+                        c8 = ::cpu::Cpu::new();
+                        c8.load(arg_list[1]);
+                    }
+                    if (c8.is_waiting()) {
                         let val = match code {
                             keyboard::Num1 => 1,
                             keyboard::Num2 => 2,
@@ -58,7 +62,7 @@ fn main() {
                             _ => -1
                         };
                         if (val != -1) {
-                            system.set_wait_register(val);
+                            c8.set_wait_register(val);
                         }
                     }
                 }
@@ -66,10 +70,10 @@ fn main() {
             }
         }
         
-        if (!system.is_waiting()) {
-    		system.cycle();
-            system.draw(&mut window);
-            system.update_keys();
+        if (!c8.is_waiting()) {
+    		c8.cycle();
+            c8.draw(&mut window);
+            c8.update_keys();
         }
     }
 
