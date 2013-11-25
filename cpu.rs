@@ -213,20 +213,20 @@ impl Cpu {
 				/* Return from subroutine */
 				self.sp -= 1;
 				self.pc = self.stack[self.sp];
-				println!("Return to {:?}", self.pc);
+				debug!("Return to {:?}", self.pc);
 			}
 			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!(~"Opcode 0NNN not implemented") }
 			(1, _, _, _) => { 
 				/* Jumps to address NNN */
 				self.pc = self.opcode & 0x0FFF;
-				println!("Jump to {:?}", self.pc);
+				debug!("Jump to {:?}", self.pc);
 			}
 			(2, _, _, _) => { 
 				/* Calls subroutine at NNN */ 
 				self.stack[self.sp] = self.pc + 2; 
 				self.sp += 1; 
 				self.pc = self.opcode & 0x0FFF;
-				println!("Call {:?}", self.pc);
+				debug!("Call {:?}", self.pc);
 			}
 			(3, x, _, _) => { 
 				/* Skips next instruction if Vx is NN */ 
@@ -235,7 +235,7 @@ impl Cpu {
 				} else {
 					self.pc += 2;
 				}
-				println!("Skips instruction if V{:u} ({:?}) is {:?}", x, self.V[x], (self.opcode & 0x00FF));
+				debug!("Skips instruction if V{:u} ({:?}) is {:?}", x, self.V[x], (self.opcode & 0x00FF));
 			}
 			(4, x, _, _) => { /* Skips next instruction if Vx isn't NN */ if (self.V[x] != (self.opcode & 0x00FF) as u8) {self.pc += 4} else {self.pc += 2} }
 			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if (self.V[x] == self.V[y]) {self.pc += 4} else {self.pc += 2} }
@@ -245,7 +245,7 @@ impl Cpu {
 				/* Sets Vx to Vy */ 
 				self.V[x] = self.V[y]; 
 				self.pc += 2;
-				println!("Set V{:u} to V{:u} ({:?})", x, y, self.V[y]);
+				debug!("Set V{:u} to V{:u} ({:?})", x, y, self.V[y]);
 			}
 			(8, x, y, 1) => { /* Sets Vx to Vx OR Vy */ self.V[x] = self.V[x] | self.V[y]; self.pc += 2 }
 			(8, x, y, 2) => { /* Sets Vx to Vx AND Vy */ self.V[x] = self.V[x] & self.V[y]; self.pc += 2 }
@@ -304,7 +304,7 @@ impl Cpu {
 				/* Sets I to NNN */ 
 				self.I = self.opcode & 0x0FFF; 
 				self.pc += 2; 
-				println!("Set I to {:?}", self.I);
+				debug!("Set I to {:?}", self.I);
 			}
 			(0xB, _, _, _) => { /* Jumps to NNN plus V0 */ self.pc = (self.opcode & 0x0FFF) + (self.V[0] as u16) }
 			(0xC, x, _, _) => { 
