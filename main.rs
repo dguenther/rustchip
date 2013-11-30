@@ -27,7 +27,7 @@ fn main() {
         None => fail!("Cannot create a new Render Window.")
     };
     window.set_framerate_limit(60);
-	let mut c8 = ::cpu::Cpu::new();
+	let mut c8 = ::cpu::Cpu::init();
 
 	c8.load(arg_list[1]);
 
