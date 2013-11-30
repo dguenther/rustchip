@@ -10,3 +10,4 @@ script:
   - ./configure
   - rustc --version
   - rustc --test test.rs
+  - ./test
