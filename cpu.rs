@@ -52,7 +52,7 @@ struct Cpu {
 }
 
 impl Cpu {
-	pub fn init() -> Cpu {
+	pub fn new() -> Cpu {
 		let mut initCpu = Cpu {
 			// Initialize registers and memory
 
@@ -110,7 +110,7 @@ impl Cpu {
 	}
  
 	pub fn load(&mut self, filename: &str) { 	 
-		let f = &Path::init(filename);
+		let f = &Path::new(filename);
 		let r = File::open(f);
 		let mut i = 0x200;
 		for byte in r.bytes() {

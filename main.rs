@@ -27,7 +27,7 @@ fn main() {
         None => fail!("Cannot create a new Render Window.")
     };
     window.set_framerate_limit(60);
-	let mut c8 = ::cpu::Cpu::init();
+	let mut c8 = ::cpu::Cpu::new();
 
 	c8.load(arg_list[1]);
 
@@ -36,7 +36,7 @@ fn main() {
             match window.poll_event() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
-                event::KeyPressed{code, alt, _} => { 
+                event::KeyPressed{code, alt, ..} => { 
                     if (code == keyboard::R && alt) {
                         c8 = ::cpu::Cpu::new();
                         c8.load(arg_list[1]);
