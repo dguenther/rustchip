@@ -1,8 +1,10 @@
 before_install:
   - yes | sudo add-apt-repository ppa:hansjorg/rust
   - yes | sudo apt-add-repository ppa:sonkun/sfml-development
+  - yes | sudo apt-add-repository ppa:pdoes/ppa
   - sudo apt-get update
 install:
+  - sudo apt-get install git
   - sudo apt-get install libsfml-dev
   - sudo apt-get install libcsfml-dev
   - sudo apt-get install rust-nightly

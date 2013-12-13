@@ -104,14 +104,10 @@ impl Cpu {
 			self.memory[0x050 + i] = fonts[i];
 		}
 	}
-
-	pub fn print_mem(&mut self) {
-		println!("{:?}", self.memory);
-	}
  
 	pub fn load(&mut self, filename: &str) { 	 
 		let f = &Path::new(filename);
-		let r = File::open(f);
+		let mut r = File::open(f);
 		let mut i = 0x200;
 		for byte in r.bytes() {
 			self.memory[i] = byte;

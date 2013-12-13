@@ -22,7 +22,7 @@ fn main() {
 
     // Create the window of the application
     let setting = ContextSettings::default();
-    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), ~"rustchip", sfDefaultStyle, &setting) {
+    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), "rustchip", sfDefaultStyle, &setting) {
         Some(window) => window,
         None => fail!("Cannot create a new Render Window.")
     };
