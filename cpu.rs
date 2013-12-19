@@ -12,7 +12,7 @@ use std::io::fs::File;
 use std::rand;
 use std::rand::Rng;
 
-struct Cpu {
+pub struct Cpu {
 	// Current opcode
 	opcode: u16,
 
