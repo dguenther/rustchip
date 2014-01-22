@@ -1,7 +1,8 @@
+extern mod native;
 extern mod rsfml;
 
-use rsfml::window::{ContextSettings, VideoMode, event};
-use rsfml::graphics::{RenderWindow, sfDefaultStyle};
+use rsfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
+use rsfml::graphics::RenderWindow;
 use rsfml::window::keyboard;
 
 use std::os::args;
@@ -11,7 +12,7 @@ mod cpu;
 #[cfg(target_os="macos")]
 #[start]
 fn start(argc: int, argv: **u8) -> int {
-    std::rt::start_on_main_thread(argc, argv, main)
+    native::start(argc, argv, main)
 }
 
 fn main() {
@@ -22,7 +23,7 @@ fn main() {
 
     // Create the window of the application
     let setting = ContextSettings::default();
-    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), "rustchip", sfDefaultStyle, &setting) {
+    let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), "rustchip", DefaultStyle, &setting) {
         Some(window) => window,
         None => fail!("Cannot create a new Render Window.")
     };
