@@ -9,8 +9,7 @@ install:
   - sudo apt-get install libcsfml-dev
   - sudo apt-get install rust-nightly
 script:
-  - git --version
   - ./configure
-  - rustc --version
-  - rustc --test test.rs
+  - rustc -L lib/ main.rs
+  - rustc -L lib/ --test test.rs
   - ./test

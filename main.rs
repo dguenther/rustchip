@@ -17,7 +17,7 @@ fn start(argc: int, argv: **u8) -> int {
 
 fn main() {
     let arg_list = args();
-    if (arg_list.len() <= 1) {
+    if arg_list.len() <= 1 {
         fail!("You must pass in a ROM for rustchip to read.");
     }
 
@@ -38,11 +38,11 @@ fn main() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
                 event::KeyPressed{code, alt, ..} => { 
-                    if (code == keyboard::R && alt) {
+                    if code == keyboard::R && alt {
                         c8 = cpu::Cpu::new();
                         c8.load(arg_list[1]);
                     }
-                    if (c8.is_waiting()) {
+                    if c8.is_waiting() {
                         let val = match code {
                             keyboard::Num1 => 1,
                             keyboard::Num2 => 2,
@@ -62,7 +62,7 @@ fn main() {
                             keyboard::V => 0xF,
                             _ => -1
                         };
-                        if (val != -1) {
+                        if val != -1 {
                             c8.set_wait_register(val);
                         }
                     }
@@ -71,7 +71,7 @@ fn main() {
             }
         }
         
-        if (!c8.is_waiting()) {
+        if !c8.is_waiting() {
     		c8.cycle();
             c8.draw(&mut window);
             c8.update_keys();

@@ -14,12 +14,12 @@ apt-get install libsfml-dev libcsfml-dev
 
 After that, run `./configure` in the repository root to pull rust-sfml, build it, and move it into the `lib/` directory.
 
-Finally, run `rustc main.rs` to build the emulator.
+Finally, run `rustc -L lib main.rs` to build the emulator.
 
 Testing
 -------
 
-After running `./configure`, run `rustc --test test.rs` followed by `./test` to run the test library.
+After running `./configure`, run `rustc -L lib --test test.rs` followed by `./test` to run the test library.
 
 Running
 -------

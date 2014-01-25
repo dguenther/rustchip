@@ -2,13 +2,21 @@ extern mod rsfml;
 
 mod cpu;
 
+fn load_vec(cpu: &mut ::cpu::Cpu, data: &[u8]) {
+	let mut i = 0x200;
+	for b in data.iter() {
+		cpu.memory[i] = *b;
+		i += 1;
+	}
+}
+
 #[test]
 fn clear_screen() {
 	// 0x00E0
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x00, 0xE0];
 	test.graphics = [1, ..64 * 32];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.draw_flag == true);
 	assert!(test.graphics == [0, ..64 * 32]);
@@ -21,7 +29,7 @@ fn return_from_subroutine() {
 	let rom = [0x00, 0xEE];
 	test.sp = 1;
 	test.stack[0] = 0x234;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x234);
 }
@@ -31,7 +39,7 @@ fn jump_to_NNN() {
 	// 0x1NNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x12, 0x05, 0x11, 0x22, 0x33, 0x44, 0x55];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x205);
 }
@@ -41,7 +49,7 @@ fn call_subroutine_at_NNN() {
 	// 0x2NNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x22, 0x34];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.sp == 1);
 	assert!(test.stack[0] == 0x202);
@@ -54,13 +62,13 @@ fn skip_if_Vx_is_NN() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x31, 0x20];
 	test.V[0x1] = 0x20;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.V[0x1] = 0x21;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 }
@@ -71,13 +79,13 @@ fn skip_if_Vx_isnt_NN() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x41, 0x20];
 	test.V[0x1] = 0x20;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 
 	test = ::cpu::Cpu::new();
 	test.V[0x1] = 0x21;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);
 }
@@ -89,14 +97,14 @@ fn skip_if_Vx_is_Vy() {
 	let rom = [0x51, 0x20];
 	test.V[0x1] = 1;
 	test.V[0x2] = 2;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 
 	test = ::cpu::Cpu::new();
 	test.V[0x1] = 1;
 	test.V[0x2] = 1;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);	
 }
@@ -106,7 +114,7 @@ fn set_V_to_NN() {
 	// 0x6xNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x61, 0x11];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0x1] == 0x11);
 }
@@ -117,7 +125,7 @@ fn add_NN_to_Vx() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x71, 0x11];
 	test.V[0x1] = 0x22;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0x1] == 0x33);	
 }
@@ -131,7 +139,7 @@ fn set_Vx_to_Vy() {
 	let rom = [0x81, 0x20];
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[1] == b);	
 }
@@ -145,7 +153,7 @@ fn set_Vx_to_Vx_OR_Vy() {
 	let rom = [0x81, 0x21];
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[1] == a | b);	
 }
@@ -159,7 +167,7 @@ fn set_Vx_to_Vx_AND_Vy() {
 	let rom = [0x81, 0x22];
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[1] == a & b);	
 }
@@ -173,7 +181,7 @@ fn set_Vx_to_Vx_XOR_Vy() {
 	let rom = [0x81, 0x23];
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[1] == a ^ b);	
 }
@@ -187,7 +195,7 @@ fn add_Vy_to_Vx() {
 	let rom = [0x81, 0x24];
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 0);
 	assert!(test.V[1] == a + b);
@@ -197,7 +205,7 @@ fn add_Vy_to_Vx() {
 	test = ::cpu::Cpu::new();
 	test.V[1] = c;
 	test.V[2] = d;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 1);
 	assert!(test.V[1] == c + d);
@@ -212,7 +220,7 @@ fn subtract_Vy_from_Vx() {
 	let rom = [0x81, 0x25];
 	test.V[1] = b;
 	test.V[2] = a;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 1);
 	assert!(test.V[1] == b - a);
@@ -220,7 +228,7 @@ fn subtract_Vy_from_Vx() {
 	test = ::cpu::Cpu::new();
 	test.V[1] = a;
 	test.V[2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 0);
 	assert!(test.V[1] == a - b);
@@ -233,7 +241,7 @@ fn shift_Vx_right() {
 	let rom = [0x81, 0x06];
 	let a = 1;
 	test.V[0x1] = a;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 1);
 	assert!(test.V[0x1] == a >> 1);
@@ -248,7 +256,7 @@ fn set_Vx_to_Vy_minus_Vx() {
 	let b = 2;
 	test.V[0x1] = a;
 	test.V[0x2] = b;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 1);
 	assert!(test.V[0x1] == b - a);
@@ -256,7 +264,7 @@ fn set_Vx_to_Vy_minus_Vx() {
 	test = ::cpu::Cpu::new();
 	test.V[0x1] = b;
 	test.V[0x2] = a;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 0);
 	assert!(test.V[0x1] == a - b);
@@ -269,7 +277,7 @@ fn shift_Vx_left() {
 	let rom = [0x81, 0x0E];
 	let a = 1;
 	test.V[0x1] = a;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[0xF] == 0);
 	assert!(test.V[0x1] == a << 1);	
@@ -282,14 +290,14 @@ fn skip_if_Vx_isnt_Vy() {
 	let rom = [0x91, 0x20];
 	test.V[0x1] = 1;
 	test.V[0x2] = 2;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.V[0x1] = 1;
 	test.V[0x2] = 1;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 }
@@ -299,7 +307,7 @@ fn set_I_to_NNN() {
 	// 0xANNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xA1, 0x23];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.I == 0x123);
 }
@@ -310,7 +318,7 @@ fn jump_to_NNN_plus_V0() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xB1, 0x23];
 	test.V[0] = 2;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x125);	
 }
@@ -321,7 +329,7 @@ fn set_Vx_to_rand_AND_NN() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xC1, 0x23];
 	test.V[1] = 2;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[1] < 0xFF);
 }
@@ -334,7 +342,7 @@ fn draw_sprite() {
 	test.V[1] = 4;
 	test.V[2] = 5;
 	test.I = 0x204;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.graphics[4 + 5 * 64] == 1);
 	assert!(test.graphics[5 + 5 * 64] == 0);
@@ -354,7 +362,7 @@ fn draw_sprite() {
 	test.V[1] = 63;
 	test.V[2] = 31;
 	test.I = 0x204;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.graphics[63 + 31 * 64] == 1);
 	assert!(test.graphics[0 + 31 * 64] == 0);
@@ -370,14 +378,14 @@ fn skip_if_key_is_pressed() {
 	let rom = [0xE1, 0x9E];
 	test.V[1] = 0xA;
 	test.keys[0xA] = 1;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.V[1] = 0xA;
 	test.keys[0xA] = 0;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 }
@@ -389,14 +397,14 @@ fn skip_if_key_isnt_pressed() {
 	let rom = [0xE1, 0xA1];
 	test.V[1] = 0xA;
 	test.keys[0xA] = 0;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.V[1] = 0xA;
 	test.keys[0xA] = 1;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.pc == 0x202);
 }
@@ -407,7 +415,7 @@ fn set_Vx_to_delay_timer() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF2, 0x07];
 	test.delay_timer = 0xF1;
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.V[2] == 0xF1);
 }
@@ -417,7 +425,7 @@ fn wait_on_keypress(){
 	// 0xFx0A
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF2, 0x0A];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.cycle();
 	assert!(test.wait_register == 2);
 	assert!(test.is_waiting());
@@ -438,7 +446,7 @@ fn fill_V0_to_Vx_from_memory() {
 	// 0xFx65
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF3, 0x65, 0x12, 0x34, 0x56, 0x78];
-	test.load_vec(rom);
+	load_vec(&mut test, rom);
 	test.I = 0x202;
 	test.cycle();
 	assert!(test.V[0] == 0x12);

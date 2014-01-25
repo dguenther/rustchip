@@ -115,14 +115,6 @@ impl Cpu {
 		}
 	}
 
-	pub fn load_vec(&mut self, data: &[u8]) {
-		let mut i = 0x200;
-		for b in data.iter() {
-			self.memory[i] = *b;
-			i += 1;
-		}
-	}
-
 	pub fn is_waiting(&mut self) -> bool {
 		return self.wait_flag;
 	}
@@ -137,7 +129,7 @@ impl Cpu {
 		let mut gfx = ~[0u8, ..64 * 32 * 4];
 		for i in range(0, 64 * 32) {
 			let mut value = self.graphics[i];
-			if (value != 0) {
+			if value != 0 {
 				value = 0xFF;
 			}
 			let mult = i * 4;
@@ -147,7 +139,7 @@ impl Cpu {
 			gfx[mult + 3] = value;
 		}
 		
-		if (self.draw_flag) {
+		if self.draw_flag {
 			let img = match Image::create_from_pixels(64, 32, gfx) {
 				Some(s) => s,
 				None => fail!("Couldn't create image from pixel array")
@@ -226,15 +218,15 @@ impl Cpu {
 			}
 			(3, x, _, _) => { 
 				/* Skips next instruction if Vx is NN */ 
-				if (self.V[x] == (self.opcode & 0x00FF) as u8) {
+				if self.V[x] == (self.opcode & 0x00FF) as u8 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
 				}
 				debug!("Skips instruction if V{:u} ({:?}) is {:?}", x, self.V[x], (self.opcode & 0x00FF));
 			}
-			(4, x, _, _) => { /* Skips next instruction if Vx isn't NN */ if (self.V[x] != (self.opcode & 0x00FF) as u8) {self.pc += 4} else {self.pc += 2} }
-			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if (self.V[x] == self.V[y]) {self.pc += 4} else {self.pc += 2} }
+			(4, x, _, _) => { /* Skips next instruction if Vx isn't NN */ if self.V[x] != (self.opcode & 0x00FF) as u8 {self.pc += 4} else {self.pc += 2} }
+			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if self.V[x] == self.V[y] {self.pc += 4} else {self.pc += 2} }
 			(6, x, _, _) => { /* Sets Vx to NN */ self.V[x] = (self.opcode & 0x00FF) as u8; self.pc += 2 }
 			(7, x, _, _) => { /* Adds NN to Vx (need to set carry?) */ self.V[x] += (self.opcode & 0x00FF) as u8; self.pc += 2 }
 			(8, x, y, 0) => { 
@@ -248,7 +240,7 @@ impl Cpu {
 			(8, x, y, 3) => { /* Sets Vx to Vx XOR Vy */ self.V[x] = self.V[x] ^ self.V[y]; self.pc += 2 }					
 			(8, x, y, 4) => { 
 				/* Adds Vy to Vx */
-				if (self.V[y] > 0xFF - self.V[x]) {
+				if self.V[y] > 0xFF - self.V[x] {
 					// set carry
 					self.V[0xF] = 1;
 				} else {
@@ -259,7 +251,7 @@ impl Cpu {
 			}
 			(8, x, y, 5) => { 
 				/* Subtracts Vy from Vx */
-				if (self.V[x] > self.V[y]) {
+				if self.V[x] > self.V[y] {
 					// set borrow
 					self.V[0xF] = 1;
 				} else {
@@ -276,7 +268,7 @@ impl Cpu {
 				self.pc += 2;
 			}
 			(8, x, y, 7) => { /* Sets Vx to Vy minus Vx */ 
-				if (self.V[y] > self.V[x]) {
+				if self.V[y] > self.V[x] {
 					// set borrow
 					self.V[0xF] = 1;
 				} else {
@@ -294,7 +286,7 @@ impl Cpu {
 			}
 			(9, x, y, 0) => { 
 				/* Skips next instruction if Vx isn't Vy */ 
-				if (self.V[x] != self.V[y]) { self.pc += 4 } else { self.pc += 2 } 
+				if self.V[x] != self.V[y] { self.pc += 4 } else { self.pc += 2 } 
 			}
 			(0xA, _, _, _) => { 
 				/* Sets I to NNN */ 
@@ -316,9 +308,9 @@ impl Cpu {
 				for y_draw in range(0, h) {
 					pixel = self.memory[self.I + y_draw];
 					for x_draw in range(0, 8) {
-						if (pixel & (0x80 >> x_draw) != 0) {
+						if pixel & (0x80 >> x_draw) != 0 {
 							let calc = ((self.V[x] as int + x_draw) % 64) + (((self.V[y] as int + y_draw as int) % 32) * 64);
-							if (self.graphics[calc] == 1) {
+							if self.graphics[calc] == 1 {
 								// Collision detection
 								self.V[0xF] = 1;
 							}
@@ -331,7 +323,7 @@ impl Cpu {
 			}
 			(0xE, x, 9, 0xE) => {
 				/* Skips next instruction if key in Vx is pressed */
-				if (self.keys[self.V[x]] == 1) {
+				if self.keys[self.V[x]] == 1 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -339,7 +331,7 @@ impl Cpu {
 			}
 			(0xE, x, 0xA, 1) => {
 				/* Skips next instruction if key in Vx isn't pressed */
-				if (self.keys[self.V[x]] == 0) {
+				if self.keys[self.V[x]] == 0 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -356,8 +348,7 @@ impl Cpu {
 			(0xF, x, 1, 8) => { /* Sets sound timer to Vx */ self.sound_timer = self.V[x]; self.pc += 2 }
 			(0xF, x, 1, 0xE) => {
 				/* Adds Vx to I */ 
-				if (self.V[x] as u16 > 0xFFF - self.I)
-				{
+				if self.V[x] as u16 > 0xFFF - self.I {
 					// set carry (undocumented)
 					self.V[0xF] = 1;
 				} else {
@@ -397,12 +388,12 @@ impl Cpu {
 		}
 
 		// Update timers
-		if (self.delay_timer > 0) {
+		if self.delay_timer > 0 {
 			self.delay_timer -= 1;
 		}
 
-		if (self.sound_timer > 0) {
-			if (self.sound_timer == 1) {
+		if self.sound_timer > 0 {
+			if self.sound_timer == 1 {
 				// TODO: BEEP
 			}
 			self.sound_timer -= 1;
