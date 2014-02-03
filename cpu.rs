@@ -1,16 +1,14 @@
 extern mod rsfml;
 
-use rsfml::graphics::{RenderWindow};
-use rsfml::graphics::image::Image;
-use rsfml::graphics::texture::Texture;
-use rsfml::graphics::sprite::Sprite;
-use rsfml::graphics::color::Color;
+use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
 
+use std::cell::RefCell;
 use std::path::Path;
 use std::io::fs::File;
 use std::rand;
 use std::rand::Rng;
+use std::rc::Rc;
 
 pub struct Cpu {
 	// Current opcode
@@ -145,10 +143,10 @@ impl Cpu {
 				None => fail!("Couldn't create image from pixel array")
 			};
 			let tex = match Texture::new_from_image(&img) {
-				Some(s) => s,
+				Some(s) => Rc::new(RefCell::new(s)),
 				None => fail!("Couldn't create texture from image")
 			};
-			let mut sprite = match Sprite::new_with_texture(&tex) {
+			let mut sprite = match Sprite::new_with_texture(tex) {
 				Some(s) => s,
 				None => fail!("Couldn't create sprite from texture")
 			};
