@@ -1,5 +1,5 @@
-extern mod native;
-extern mod rsfml;
+extern crate native;
+extern crate rsfml;
 
 use rsfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
 use rsfml::graphics::RenderWindow;

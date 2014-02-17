@@ -1,4 +1,4 @@
-extern mod rsfml;
+extern crate rsfml;
 
 use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
