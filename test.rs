@@ -1,4 +1,4 @@
-extern mod rsfml;
+extern crate rsfml;
 
 mod cpu;
 
