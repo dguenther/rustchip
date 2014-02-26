@@ -3,6 +3,7 @@ extern crate rsfml;
 use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
 
+use std::bool;
 use std::path::Path;
 use std::io::fs::File;
 use std::rand;
@@ -159,22 +160,22 @@ impl Cpu {
 	}
 
 	pub fn update_keys(&mut self) {
-		self.keys[1] = keyboard::is_key_pressed(keyboard::Num1).to_bit();
-		self.keys[2] = keyboard::is_key_pressed(keyboard::Num2).to_bit();
-		self.keys[3] = keyboard::is_key_pressed(keyboard::Num3).to_bit();
-		self.keys[0xC] = keyboard::is_key_pressed(keyboard::Num4).to_bit();
-		self.keys[4] = keyboard::is_key_pressed(keyboard::Q).to_bit();
-		self.keys[5] = keyboard::is_key_pressed(keyboard::W).to_bit();
-		self.keys[6] = keyboard::is_key_pressed(keyboard::E).to_bit();
-		self.keys[0xD] = keyboard::is_key_pressed(keyboard::R).to_bit();
-		self.keys[7] = keyboard::is_key_pressed(keyboard::A).to_bit();
-		self.keys[8] = keyboard::is_key_pressed(keyboard::S).to_bit();
-		self.keys[9] = keyboard::is_key_pressed(keyboard::D).to_bit();
-		self.keys[0xE] = keyboard::is_key_pressed(keyboard::F).to_bit();
-		self.keys[0xA] = keyboard::is_key_pressed(keyboard::Z).to_bit();
-		self.keys[0] = keyboard::is_key_pressed(keyboard::X).to_bit();
-		self.keys[0xB] = keyboard::is_key_pressed(keyboard::C).to_bit();
-		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V).to_bit();
+		self.keys[1] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num1));
+		self.keys[2] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num2));
+		self.keys[3] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num3));
+		self.keys[0xC] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num4));
+		self.keys[4] = bool::to_bit(keyboard::is_key_pressed(keyboard::Q));
+		self.keys[5] = bool::to_bit(keyboard::is_key_pressed(keyboard::W));
+		self.keys[6] = bool::to_bit(keyboard::is_key_pressed(keyboard::E));
+		self.keys[0xD] = bool::to_bit(keyboard::is_key_pressed(keyboard::R));
+		self.keys[7] = bool::to_bit(keyboard::is_key_pressed(keyboard::A));
+		self.keys[8] = bool::to_bit(keyboard::is_key_pressed(keyboard::S));
+		self.keys[9] = bool::to_bit(keyboard::is_key_pressed(keyboard::D));
+		self.keys[0xE] = bool::to_bit(keyboard::is_key_pressed(keyboard::F));
+		self.keys[0xA] = bool::to_bit(keyboard::is_key_pressed(keyboard::Z));
+		self.keys[0] = bool::to_bit(keyboard::is_key_pressed(keyboard::X));
+		self.keys[0xB] = bool::to_bit(keyboard::is_key_pressed(keyboard::C));
+		self.keys[0xF] = bool::to_bit(keyboard::is_key_pressed(keyboard::V));
 	}
 
 	pub fn cycle(&mut self) {
