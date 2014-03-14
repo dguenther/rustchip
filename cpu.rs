@@ -1,4 +1,5 @@
 extern crate rsfml;
+extern crate rand;
 
 use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
@@ -6,8 +7,6 @@ use rsfml::window::keyboard;
 use std::bool;
 use std::path::Path;
 use std::io::fs::File;
-use std::rand;
-use std::rand::Rng;
 
 pub struct Cpu {
 	// Current opcode
@@ -107,7 +106,7 @@ impl Cpu {
 		let mut r = File::open(f);
 		let mut i = 0x200;
 		for byte in r.bytes() {
-			self.memory[i] = byte;
+			self.memory[i] = byte.unwrap();
 			i += 1;
 		}
 	}
@@ -294,7 +293,7 @@ impl Cpu {
 			(0xB, _, _, _) => { /* Jumps to NNN plus V0 */ self.pc = (self.opcode & 0x0FFF) + (self.V[0] as u16) }
 			(0xC, x, _, _) => { 
 				/* Sets Vx to a random number and NN */
-				let randNum: u8 = rand::weak_rng().gen();
+				let randNum: u8 = rand::random();
 				self.V[x] =  randNum & ((self.opcode & 0x00FF) as u8);
 				self.pc += 2
 			}
