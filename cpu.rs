@@ -7,6 +7,7 @@ use rsfml::window::keyboard;
 use std::bool;
 use std::io::fs::File;
 use std::path::Path;
+use std::vec_ng;
 use std::vec_ng::Vec;
 
 pub struct Cpu {
@@ -122,18 +123,13 @@ impl Cpu {
 	}
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
-		// Fix warnings around this once rust-sfml is updated
-		let mut gfx = ~[0u8, ..64 * 32 * 4];
+		let mut gfx: Vec<u8> = Vec::with_capacity(64 * 32 * 4);
 		for i in range(0, 64 * 32) {
-			let mut value = self.graphics[i];
-			if value != 0 {
-				value = 0xFF;
-			}
-			let mult = i * 4;
-			gfx[mult] = value;
-			gfx[mult + 1] = value;
-			gfx[mult + 2] = value;
-			gfx[mult + 3] = value;
+			let value = match self.graphics[i] {
+				0 => 0,
+				_ => 0xFF
+			};
+			gfx = vec_ng::append(gfx, &[value, value, value, value]);
 		}
 		
 		if self.draw_flag {
