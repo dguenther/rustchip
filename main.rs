@@ -1,3 +1,7 @@
+#[feature(phase)];
+
+#[phase(syntax, link)]
+extern crate log;
 extern crate native;
 extern crate rsfml;
 
