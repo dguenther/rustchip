@@ -4,6 +4,7 @@ git submodule update --init --remote --recursive
 
 rm -rf lib
 mkdir lib
-cd rust-sfml/src/rsfml
-rustc lib.rs
-mv librsfml* ../../../lib
+cd rust-sfml
+make rsfml
+cd lib
+mv librsfml* ../../lib/
