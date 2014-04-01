@@ -7,8 +7,6 @@ use rsfml::window::keyboard;
 use std::bool;
 use std::io::fs::File;
 use std::path::Path;
-use std::vec;
-use std::vec::Vec;
 
 pub struct Cpu {
 	// Current opcode
@@ -129,7 +127,7 @@ impl Cpu {
 				0 => 0,
 				_ => 0xFF
 			};
-			gfx = vec::append(gfx, &[value, value, value, value]);
+			gfx = gfx.append(&[value, value, value, value]);
 		}
 		
 		if self.draw_flag {
