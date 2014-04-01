@@ -16,35 +16,35 @@ pub struct Cpu {
 	// 0x000 - 0x1FF Interpreter
 	// 0x050 - 0x0A0 Fonts
 	// 0x200 - 0xFFF ROM and RAM
-	memory: [u8, ..4096],
+	pub memory: [u8, ..4096],
 	
 	// Registers
-	v: [u8, ..16],
+	pub v: [u8, ..16],
 
 	// Index register
-	index: u16,
+	pub index: u16,
 
 	// Program counter
-	pc: u16,
+	pub pc: u16,
 
 	// Black and white, 64 x 32 screen
-	graphics: [u8, ..64 * 32],
+	pub graphics: [u8, ..64 * 32],
 
 	// Timer registers
-	delay_timer: u8,
-	sound_timer: u8,
+	pub delay_timer: u8,
+	pub sound_timer: u8,
 
 	// Stack
-	stack: [u16, ..16],
-	sp: u16,
+	pub stack: [u16, ..16],
+	pub sp: u16,
 
 	// Keys
-	keys: [u8, ..16],
+	pub keys: [u8, ..16],
 
 	// emulator flags and values
-	draw_flag: bool,
-	wait_flag: bool,
-	wait_register: u8
+	pub draw_flag: bool,
+	pub wait_flag: bool,
+	pub wait_register: u8
 }
 
 impl Cpu {
