@@ -9,6 +9,9 @@ use std::io::fs::File;
 use std::path::Path;
 
 pub struct Cpu {
+	// These fields are public so they can be set directly in tests, not sure
+	// if there's a better way to do that
+
 	// Current opcode
 	opcode: u16,
 
@@ -96,7 +99,7 @@ impl Cpu {
 		  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		  0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 		];
-		for i in range(0, 79) {
+		for i in range(0, 79u) {
 			self.memory[0x050 + i] = fonts[i];
 		}
 	}
@@ -116,13 +119,13 @@ impl Cpu {
 	}
 
 	pub fn set_wait_register(&mut self, value: u8) {
-		self.v[self.wait_register] = value;
+		self.v[self.wait_register as uint] = value;
 		self.wait_flag = false;
 	}
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
 		let mut gfx: Vec<u8> = Vec::with_capacity(64 * 32 * 4);
-		for i in range(0, 64 * 32) {
+		for i in range(0u, 64 * 32) {
 			let value = match self.graphics[i] {
 				0 => 0,
 				_ => 0xFF
@@ -174,10 +177,11 @@ impl Cpu {
 
 	pub fn cycle(&mut self) {
 		// Fetch Opcode
-		self.opcode = self.memory[self.pc] as u16 << 8 | self.memory[self.pc + 1] as u16;
+		self.opcode = self.memory[self.pc as uint] as u16 << 8 | self.memory[self.pc as uint + 1] as u16;
 		
 		// Decode/Execute Opcode
-		let opTuple = ((self.opcode & 0xF000) >> 12, (self.opcode & 0x0F00) >> 8, (self.opcode & 0x00F0) >> 4, self.opcode & 0x000F);
+		let opTuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
+						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
 
 		debug!("{:?}", opTuple);
 
@@ -191,7 +195,7 @@ impl Cpu {
 			(0, 0, 0xE, 0xE) => { 
 				/* Return from subroutine */
 				self.sp -= 1;
-				self.pc = self.stack[self.sp];
+				self.pc = self.stack[self.sp as uint];
 				debug!("Return to {:?}", self.pc);
 			}
 			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!(~"Opcode 0NNN not implemented") }
@@ -202,7 +206,7 @@ impl Cpu {
 			}
 			(2, _, _, _) => { 
 				/* Calls subroutine at NNN */ 
-				self.stack[self.sp] = self.pc + 2; 
+				self.stack[self.sp as uint] = self.pc + 2; 
 				self.sp += 1; 
 				self.pc = self.opcode & 0x0FFF;
 				debug!("Call {:?}", self.pc);
@@ -297,10 +301,10 @@ impl Cpu {
 				let mut pixel: u8;
 				self.v[0xF] = 0;
 				for y_draw in range(0, h) {
-					pixel = self.memory[self.index + y_draw];
+					pixel = self.memory[(self.index as uint + y_draw)];
 					for x_draw in range(0, 8) {
 						if pixel & (0x80 >> x_draw) != 0 {
-							let calc = ((self.v[x] as int + x_draw) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64);
+							let calc: uint = (((self.v[x] as int + x_draw) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64)) as uint;
 							if self.graphics[calc] == 1 {
 								// Collision detection
 								self.v[0xF] = 1;
@@ -314,7 +318,7 @@ impl Cpu {
 			}
 			(0xE, x, 9, 0xE) => {
 				/* Skips next instruction if key in Vx is pressed */
-				if self.keys[self.v[x]] == 1 {
+				if self.keys[self.v[x] as uint] == 1 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -322,7 +326,7 @@ impl Cpu {
 			}
 			(0xE, x, 0xA, 1) => {
 				/* Skips next instruction if key in Vx isn't pressed */
-				if self.keys[self.v[x]] == 0 {
+				if self.keys[self.v[x] as uint] == 0 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -356,22 +360,22 @@ impl Cpu {
 			(0xF, x, 3, 3) => {
 				// Stores binary-coded decimal representation of Vx at I, I+1, and I+2
 				// In other words, each digit of the number in a separate memory location
-				self.memory[self.index] = self.v[x] / 100;
-				self.memory[self.index + 1] = (self.v[x] / 10) % 10;
-				self.memory[self.index + 2] = self.v[x] % 10;
+				self.memory[self.index as uint] = self.v[x] / 100;
+				self.memory[self.index as uint + 1] = (self.v[x] / 10) % 10;
+				self.memory[self.index as uint + 2] = self.v[x] % 10;
 				self.pc += 2;
 			}
 			(0xF, x, 5, 5) => { 
 				/* Stores V0 to Vx in memory starting at address I */
 				for i in range(0, x + 1) {
-					self.memory[self.index + i] = self.v[i];
+					self.memory[(self.index as uint + i)] = self.v[i];
 				}
 				self.pc += 2;
 			}
 			(0xF, x, 6, 5) => { 
 				/* Fills V0 to Vx from memory starting at address I */
 				for i in range(0, x + 1) {
-					self.v[i] = self.memory[self.index + i];
+					self.v[i] = self.memory[(self.index as uint + i)];
 				}
 				self.pc += 2;
 			}
