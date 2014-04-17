@@ -5,7 +5,7 @@ extern crate log;
 extern crate rsfml;
 extern crate test;
 
-use test::BenchHarness;
+use test::Bencher;
 
 mod cpu;
 
@@ -463,7 +463,7 @@ fn fill_V0_to_Vx_from_memory() {
 }
 
 #[bench]
-fn loop_0_to_255(b: &mut BenchHarness) {
+fn loop_0_to_255(b: &mut Bencher) {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x60, 0x00, // 200: set v0 to 0
 			   0x70, 0x01, // 202: add 1 to v0
@@ -481,7 +481,7 @@ fn loop_0_to_255(b: &mut BenchHarness) {
 }
 
 #[bench]
-fn draw_sprite_bench(b: &mut BenchHarness) {
+fn draw_sprite_bench(b: &mut Bencher) {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
 	test.v[1] = 4;
