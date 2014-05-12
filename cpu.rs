@@ -198,7 +198,7 @@ impl Cpu {
 				self.pc = self.stack[self.sp as uint];
 				debug!("Return to {:?}", self.pc);
 			}
-			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!(~"Opcode 0NNN not implemented") }
+			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!("Opcode 0NNN not implemented") }
 			(1, _, _, _) => { 
 				/* Jumps to address NNN */
 				self.pc = self.opcode & 0x0FFF;
@@ -379,7 +379,7 @@ impl Cpu {
 				}
 				self.pc += 2;
 			}
-			_ => fail!(~"Unknown instruction")
+			_ => fail!("Unknown instruction")
 		}
 
 		// Update timers
