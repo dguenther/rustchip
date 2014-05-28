@@ -104,8 +104,8 @@ impl Cpu {
 		}
 	}
  
-	pub fn load(&mut self, filename: &str) { 	 
-		let f = &Path::new(filename);
+	pub fn load(&mut self, filename: &String) { 	 
+		let f = &Path::new(filename.to_string());
 		let mut r = File::open(f);
 		let mut i = 0x200;
 		for byte in r.bytes() {
@@ -183,7 +183,7 @@ impl Cpu {
 		let opTuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
 						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
 
-		debug!("{:?}", opTuple);
+		debug!("{}", opTuple);
 
 		match opTuple {
 			(0, 0, 0xE, 0) => { 
@@ -196,20 +196,20 @@ impl Cpu {
 				/* Return from subroutine */
 				self.sp -= 1;
 				self.pc = self.stack[self.sp as uint];
-				debug!("Return to {:?}", self.pc);
+				debug!("Return to {}", self.pc);
 			}
 			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!("Opcode 0NNN not implemented") }
 			(1, _, _, _) => { 
 				/* Jumps to address NNN */
 				self.pc = self.opcode & 0x0FFF;
-				debug!("Jump to {:?}", self.pc);
+				debug!("Jump to {}", self.pc);
 			}
 			(2, _, _, _) => { 
 				/* Calls subroutine at NNN */ 
 				self.stack[self.sp as uint] = self.pc + 2; 
 				self.sp += 1; 
 				self.pc = self.opcode & 0x0FFF;
-				debug!("Call {:?}", self.pc);
+				debug!("Call {}", self.pc);
 			}
 			(3, x, _, _) => { 
 				/* Skips next instruction if Vx is NN */ 
@@ -218,7 +218,7 @@ impl Cpu {
 				} else {
 					self.pc += 2;
 				}
-				debug!("Skips instruction if V{:u} ({:?}) is {:?}", x, self.v[x], (self.opcode & 0x00FF));
+				debug!("Skips instruction if V{} ({}) is {}", x, self.v[x], (self.opcode & 0x00FF));
 			}
 			(4, x, _, _) => { /* Skips next instruction if Vx isn't NN */ if self.v[x] != (self.opcode & 0x00FF) as u8 {self.pc += 4} else {self.pc += 2} }
 			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if self.v[x] == self.v[y] {self.pc += 4} else {self.pc += 2} }
@@ -228,7 +228,7 @@ impl Cpu {
 				/* Sets Vx to Vy */ 
 				self.v[x] = self.v[y]; 
 				self.pc += 2;
-				debug!("Set V{:u} to V{:u} ({:?})", x, y, self.v[y]);
+				debug!("Set V{} to V{} ({})", x, y, self.v[y]);
 			}
 			(8, x, y, 1) => { /* Sets Vx to Vx OR Vy */ self.v[x] = self.v[x] | self.v[y]; self.pc += 2 }
 			(8, x, y, 2) => { /* Sets Vx to Vx AND Vy */ self.v[x] = self.v[x] & self.v[y]; self.pc += 2 }
@@ -287,7 +287,7 @@ impl Cpu {
 				/* Sets index register to NNN */ 
 				self.index = self.opcode & 0x0FFF; 
 				self.pc += 2; 
-				debug!("Set I to {:?}", self.index);
+				debug!("Set I to {}", self.index);
 			}
 			(0xB, _, _, _) => { /* Jumps to NNN plus V0 */ self.pc = (self.opcode & 0x0FFF) + (self.v[0] as u16) }
 			(0xC, x, _, _) => { 
