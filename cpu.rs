@@ -1,5 +1,4 @@
 extern crate rsfml;
-extern crate rand;
 
 use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
@@ -7,6 +6,7 @@ use rsfml::window::keyboard;
 use std::bool;
 use std::io::fs::File;
 use std::path::Path;
+use std::rand;
 
 pub struct Cpu {
 	// These fields are public so they can be set directly in tests, not sure
