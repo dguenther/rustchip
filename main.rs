@@ -1,6 +1,6 @@
 #![feature(phase)]
 
-#[phase(syntax, link)]
+#[phase(plugin, link)]
 extern crate log;
 extern crate native;
 extern crate rsfml;
@@ -15,7 +15,7 @@ mod cpu;
 
 #[cfg(target_os="macos")]
 #[start]
-fn start(argc: int, argv: **u8) -> int {
+fn start(argc: int, argv: *const *const u8) -> int {
     native::start(argc, argv, main)
 }
 

@@ -1,6 +1,6 @@
 #![feature(phase)]
 
-#[phase(syntax, link)]
+#[phase(plugin, link)]
 extern crate log;
 extern crate rsfml;
 extern crate test;
@@ -42,7 +42,7 @@ fn return_from_subroutine() {
 }
 
 #[test]
-fn jump_to_NNN() {
+fn jump_to_nnn() {
 	// 0x1NNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x12, 0x05, 0x11, 0x22, 0x33, 0x44, 0x55];
@@ -52,7 +52,7 @@ fn jump_to_NNN() {
 }
 
 #[test]
-fn call_subroutine_at_NNN() {
+fn call_subroutine_at_nnn() {
 	// 0x2NNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x22, 0x34];
@@ -64,7 +64,7 @@ fn call_subroutine_at_NNN() {
 }
 
 #[test]
-fn skip_if_Vx_is_NN() {
+fn skip_if_vx_is_nn() {
 	// 0x3xNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x31, 0x20];
@@ -81,7 +81,7 @@ fn skip_if_Vx_is_NN() {
 }
 
 #[test]
-fn skip_if_Vx_isnt_NN() {
+fn skip_if_vx_isnt_nn() {
 	// 0x4xNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x41, 0x20];
@@ -98,7 +98,7 @@ fn skip_if_Vx_isnt_NN() {
 }
 
 #[test]
-fn skip_if_Vx_is_Vy() {
+fn skip_if_vx_is_vy() {
 	// 0x5xy0
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x51, 0x20];
@@ -117,7 +117,7 @@ fn skip_if_Vx_is_Vy() {
 }
 
 #[test]
-fn set_V_to_NN() {
+fn set_v_to_nn() {
 	// 0x6xNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x61, 0x11];
@@ -127,7 +127,7 @@ fn set_V_to_NN() {
 }
 
 #[test]
-fn add_NN_to_Vx() {
+fn add_nn_to_vx() {
 	// 0x7xNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x71, 0x11];
@@ -138,7 +138,7 @@ fn add_NN_to_Vx() {
 }
 
 #[test]
-fn set_Vx_to_Vy() {
+fn set_vx_to_vy() {
 	// 0x8xy0
 	let a = 5;
 	let b = 6;
@@ -152,7 +152,7 @@ fn set_Vx_to_Vy() {
 }
 
 #[test]
-fn set_Vx_to_Vx_OR_Vy() {
+fn set_vx_to_vx_or_vy() {
 	// 0x8xy1
 	let a = 5;
 	let b = 6;
@@ -166,7 +166,7 @@ fn set_Vx_to_Vx_OR_Vy() {
 }
 
 #[test]
-fn set_Vx_to_Vx_AND_Vy() {
+fn set_vx_to_vx_and_vy() {
 	// 0x8xy2
 	let a = 5;
 	let b = 6;
@@ -180,7 +180,7 @@ fn set_Vx_to_Vx_AND_Vy() {
 }
 
 #[test]
-fn set_Vx_to_Vx_XOR_Vy() {
+fn set_vx_to_vx_xor_vy() {
 	// 0x8xy3
 	let a = 5;
 	let b = 6;
@@ -194,7 +194,7 @@ fn set_Vx_to_Vx_XOR_Vy() {
 }
 
 #[test]
-fn add_Vy_to_Vx() {
+fn add_vy_to_vx() {
 	// 0x8xy4
 	let a: u8 = 5;
 	let b: u8 = 6;
@@ -219,7 +219,7 @@ fn add_Vy_to_Vx() {
 }
 
 #[test]
-fn subtract_Vy_from_Vx() {
+fn subtract_vy_from_vx() {
 	// 0x8xy5
 	let a: u8 = 5;
 	let b: u8 = 6;
@@ -242,7 +242,7 @@ fn subtract_Vy_from_Vx() {
 }
 
 #[test]
-fn shift_Vx_right() {
+fn shift_vx_right() {
 	// 0x8xN6
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x81, 0x06];
@@ -255,7 +255,7 @@ fn shift_Vx_right() {
 }
 
 #[test]
-fn set_Vx_to_Vy_minus_Vx() {
+fn set_vx_to_vy_minus_vx() {
 	// 0x8xN7
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x81, 0x27];
@@ -278,7 +278,7 @@ fn set_Vx_to_Vy_minus_Vx() {
 }
 
 #[test]
-fn shift_Vx_left() {
+fn shift_vx_left() {
 	// 0x8xNE
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x81, 0x0E];
@@ -291,7 +291,7 @@ fn shift_Vx_left() {
 }
 
 #[test]
-fn skip_if_Vx_isnt_Vy() {
+fn skip_if_vx_isnt_vy() {
 	// 0x9xy0
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x91, 0x20];
@@ -310,7 +310,7 @@ fn skip_if_Vx_isnt_Vy() {
 }
 
 #[test]
-fn set_I_to_NNN() {
+fn set_i_to_nnn() {
 	// 0xANNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xA1, 0x23];
@@ -320,7 +320,7 @@ fn set_I_to_NNN() {
 }
 
 #[test]
-fn jump_to_NNN_plus_V0() {
+fn jump_to_nnn_plus_v0() {
 	// 0xBNNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xB1, 0x23];
@@ -331,7 +331,7 @@ fn jump_to_NNN_plus_V0() {
 }
 
 #[test]
-fn set_Vx_to_rand_AND_NN() {
+fn set_vx_to_rand_and_nn() {
 	// 0xCNNN
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xC1, 0x23];
@@ -417,7 +417,7 @@ fn skip_if_key_isnt_pressed() {
 }
 
 #[test]
-fn set_Vx_to_delay_timer() {
+fn set_vx_to_delay_timer() {
 	// 0xFx07
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF2, 0x07];
@@ -449,7 +449,7 @@ fn continue_after_wait(){
 }
 
 #[test]
-fn fill_V0_to_Vx_from_memory() {
+fn fill_v0_to_vx_from_memory() {
 	// 0xFx65
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF3, 0x65, 0x12, 0x34, 0x56, 0x78];

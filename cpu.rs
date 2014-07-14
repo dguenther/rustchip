@@ -3,7 +3,6 @@ extern crate rsfml;
 use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
 use rsfml::window::keyboard;
 
-use std::bool;
 use std::io::fs::File;
 use std::path::Path;
 use std::rand;
@@ -134,7 +133,7 @@ impl Cpu {
 		}
 		
 		if self.draw_flag {
-			let img = match Image::create_from_pixels(64, 32, gfx) {
+			let img = match Image::create_from_pixels(64, 32, gfx.as_slice()) {
 				Some(s) => s,
 				None => fail!("Couldn't create image from pixel array")
 			};
@@ -157,22 +156,22 @@ impl Cpu {
 	}
 
 	pub fn update_keys(&mut self) {
-		self.keys[1] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num1));
-		self.keys[2] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num2));
-		self.keys[3] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num3));
-		self.keys[0xC] = bool::to_bit(keyboard::is_key_pressed(keyboard::Num4));
-		self.keys[4] = bool::to_bit(keyboard::is_key_pressed(keyboard::Q));
-		self.keys[5] = bool::to_bit(keyboard::is_key_pressed(keyboard::W));
-		self.keys[6] = bool::to_bit(keyboard::is_key_pressed(keyboard::E));
-		self.keys[0xD] = bool::to_bit(keyboard::is_key_pressed(keyboard::R));
-		self.keys[7] = bool::to_bit(keyboard::is_key_pressed(keyboard::A));
-		self.keys[8] = bool::to_bit(keyboard::is_key_pressed(keyboard::S));
-		self.keys[9] = bool::to_bit(keyboard::is_key_pressed(keyboard::D));
-		self.keys[0xE] = bool::to_bit(keyboard::is_key_pressed(keyboard::F));
-		self.keys[0xA] = bool::to_bit(keyboard::is_key_pressed(keyboard::Z));
-		self.keys[0] = bool::to_bit(keyboard::is_key_pressed(keyboard::X));
-		self.keys[0xB] = bool::to_bit(keyboard::is_key_pressed(keyboard::C));
-		self.keys[0xF] = bool::to_bit(keyboard::is_key_pressed(keyboard::V));
+		self.keys[1] = keyboard::is_key_pressed(keyboard::Num1) as u8;
+		self.keys[2] = keyboard::is_key_pressed(keyboard::Num2) as u8;
+		self.keys[3] = keyboard::is_key_pressed(keyboard::Num3) as u8;
+		self.keys[0xC] = keyboard::is_key_pressed(keyboard::Num4) as u8;
+		self.keys[4] = keyboard::is_key_pressed(keyboard::Q) as u8;
+		self.keys[5] = keyboard::is_key_pressed(keyboard::W) as u8;
+		self.keys[6] = keyboard::is_key_pressed(keyboard::E) as u8;
+		self.keys[0xD] = keyboard::is_key_pressed(keyboard::R) as u8;
+		self.keys[7] = keyboard::is_key_pressed(keyboard::A) as u8;
+		self.keys[8] = keyboard::is_key_pressed(keyboard::S) as u8;
+		self.keys[9] = keyboard::is_key_pressed(keyboard::D) as u8;
+		self.keys[0xE] = keyboard::is_key_pressed(keyboard::F) as u8;
+		self.keys[0xA] = keyboard::is_key_pressed(keyboard::Z) as u8;
+		self.keys[0] = keyboard::is_key_pressed(keyboard::X) as u8;
+		self.keys[0xB] = keyboard::is_key_pressed(keyboard::C) as u8;
+		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V) as u8;
 	}
 
 	pub fn cycle(&mut self) {
@@ -304,7 +303,7 @@ impl Cpu {
 					pixel = self.memory[(self.index as uint + y_draw)];
 					for x_draw in range(0, 8) {
 						if pixel & (0x80 >> x_draw) != 0 {
-							let calc: uint = (((self.v[x] as int + x_draw) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64)) as uint;
+							let calc: uint = (((self.v[x] as int + x_draw as int) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64)) as uint;
 							if self.graphics[calc] == 1 {
 								// Collision detection
 								self.v[0xF] = 1;
