@@ -34,7 +34,7 @@ fn main() {
     window.set_framerate_limit(60);
 	let mut c8 = cpu::Cpu::new();
 
-	c8.load(arg_list.get(1));
+	c8.load(&arg_list[1]);
 
     while window.is_open() {
         loop {
@@ -44,7 +44,7 @@ fn main() {
                 event::KeyPressed{code, alt, ..} => { 
                     if code == keyboard::R && alt {
                         c8 = cpu::Cpu::new();
-                        c8.load(arg_list.get(1));
+                        c8.load(&arg_list[1]);
                     }
                     if c8.is_waiting() {
                         let val = match code {
