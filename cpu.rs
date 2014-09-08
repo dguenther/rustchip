@@ -51,7 +51,7 @@ pub struct Cpu {
 
 impl Cpu {
 	pub fn new() -> Cpu {
-		let mut initCpu = Cpu {
+		let mut init_cpu = Cpu {
 			// Initialize registers and memory
 
 			// Program is loaded into memory at 0x200
@@ -74,8 +74,8 @@ impl Cpu {
 			wait_flag: false,
 			wait_register: 0,
 		};
-		initCpu.load_fontset();
-		initCpu
+		init_cpu.load_fontset();
+		init_cpu
 	}
 
 	fn load_fontset(&mut self) {
@@ -179,12 +179,12 @@ impl Cpu {
 		self.opcode = self.memory[self.pc as uint] as u16 << 8 | self.memory[self.pc as uint + 1] as u16;
 		
 		// Decode/Execute Opcode
-		let opTuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
+		let op_tuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
 						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
 
-		debug!("{}", opTuple);
+		debug!("{}", op_tuple);
 
-		match opTuple {
+		match op_tuple {
 			(0, 0, 0xE, 0) => { 
 				/* Clear screen */ 
 				self.graphics = [0, ..64 * 32];
@@ -291,8 +291,8 @@ impl Cpu {
 			(0xB, _, _, _) => { /* Jumps to NNN plus V0 */ self.pc = (self.opcode & 0x0FFF) + (self.v[0] as u16) }
 			(0xC, x, _, _) => { 
 				/* Sets Vx to a random number and NN */
-				let randNum: u8 = rand::random();
-				self.v[x] =  randNum & ((self.opcode & 0x00FF) as u8);
+				let rand_num: u8 = rand::random();
+				self.v[x] =  rand_num & ((self.opcode & 0x00FF) as u8);
 				self.pc += 2
 			}
 			(0xD, x, y, h) => { 
