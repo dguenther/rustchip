@@ -1,6 +1,6 @@
 extern crate rsfml;
 
-use rsfml::graphics::{Color, Image, RenderWindow, Sprite, Texture};
+use rsfml::graphics::{Color, Image, RenderWindow, RenderTarget, Sprite, Texture};
 use rsfml::window::keyboard;
 
 use std::io::fs::File;
