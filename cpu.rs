@@ -126,10 +126,12 @@ impl Cpu {
 		let mut gfx: Vec<u8> = Vec::with_capacity(64 * 32 * 4);
 		for i in range(0u, 64 * 32) {
 			let value = match self.graphics[i] {
-				0 => 0,
-				_ => 0xFF
+				0 => 0u8,
+				_ => 0xFFu8
 			};
-			gfx = gfx.append(&[value, value, value, value]);
+			// SFML takes RGBA, but we only want to display black or white,
+			// (all 255 or all 0) so we'll just repeat the same value 4 times
+			gfx.grow(4, value);
 		}
 		
 		if self.draw_flag {
