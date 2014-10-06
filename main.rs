@@ -76,7 +76,7 @@ fn main() {
         }
         
         if !c8.is_waiting() {
-    		c8.cycle();
+    		c8.run_cycle();
             c8.draw(&mut window);
             c8.update_keys();
         }

@@ -174,7 +174,7 @@ impl Cpu {
 		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V) as u8;
 	}
 
-	pub fn cycle(&mut self) {
+	pub fn run_cycle(&mut self) {
 		// Fetch Opcode
 		self.opcode = self.memory[self.pc as uint] as u16 << 8 | self.memory[self.pc as uint + 1] as u16;
 		

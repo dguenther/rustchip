@@ -24,7 +24,7 @@ fn clear_screen() {
 	let rom = [0x00, 0xE0];
 	test.graphics = [1, ..64 * 32];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.draw_flag == true);
 	assert!(test.graphics == [0, ..64 * 32]);
 }
@@ -37,7 +37,7 @@ fn return_from_subroutine() {
 	test.sp = 1;
 	test.stack[0] = 0x234;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x234);
 }
 
@@ -47,7 +47,7 @@ fn jump_to_nnn() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x12, 0x05, 0x11, 0x22, 0x33, 0x44, 0x55];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x205);
 }
 
@@ -57,7 +57,7 @@ fn call_subroutine_at_nnn() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x22, 0x34];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.sp == 1);
 	assert!(test.stack[0] == 0x202);
 	assert!(test.pc == 0x234);
@@ -70,13 +70,13 @@ fn skip_if_vx_is_nn() {
 	let rom = [0x31, 0x20];
 	test.v[0x1] = 0x20;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.v[0x1] = 0x21;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 }
 
@@ -87,13 +87,13 @@ fn skip_if_vx_isnt_nn() {
 	let rom = [0x41, 0x20];
 	test.v[0x1] = 0x20;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 
 	test = ::cpu::Cpu::new();
 	test.v[0x1] = 0x21;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);
 }
 
@@ -105,14 +105,14 @@ fn skip_if_vx_is_vy() {
 	test.v[0x1] = 1;
 	test.v[0x2] = 2;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 
 	test = ::cpu::Cpu::new();
 	test.v[0x1] = 1;
 	test.v[0x2] = 1;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);	
 }
 
@@ -122,7 +122,7 @@ fn set_v_to_nn() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0x61, 0x11];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0x1] == 0x11);
 }
 
@@ -133,7 +133,7 @@ fn add_nn_to_vx() {
 	let rom = [0x71, 0x11];
 	test.v[0x1] = 0x22;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0x1] == 0x33);	
 }
 
@@ -147,7 +147,7 @@ fn set_vx_to_vy() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[1] == b);	
 }
 
@@ -161,7 +161,7 @@ fn set_vx_to_vx_or_vy() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[1] == a | b);	
 }
 
@@ -175,7 +175,7 @@ fn set_vx_to_vx_and_vy() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[1] == a & b);	
 }
 
@@ -189,7 +189,7 @@ fn set_vx_to_vx_xor_vy() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[1] == a ^ b);	
 }
 
@@ -203,7 +203,7 @@ fn add_vy_to_vx() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 0);
 	assert!(test.v[1] == a + b);
 
@@ -213,7 +213,7 @@ fn add_vy_to_vx() {
 	test.v[1] = c;
 	test.v[2] = d;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 1);
 	assert!(test.v[1] == c + d);
 }
@@ -228,7 +228,7 @@ fn subtract_vy_from_vx() {
 	test.v[1] = b;
 	test.v[2] = a;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 1);
 	assert!(test.v[1] == b - a);
 
@@ -236,7 +236,7 @@ fn subtract_vy_from_vx() {
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 0);
 	assert!(test.v[1] == a - b);
 }
@@ -249,7 +249,7 @@ fn shift_vx_right() {
 	let a = 1;
 	test.v[0x1] = a;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 1);
 	assert!(test.v[0x1] == a >> 1);
 }
@@ -264,7 +264,7 @@ fn set_vx_to_vy_minus_vx() {
 	test.v[0x1] = a;
 	test.v[0x2] = b;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 1);
 	assert!(test.v[0x1] == b - a);
 
@@ -272,7 +272,7 @@ fn set_vx_to_vy_minus_vx() {
 	test.v[0x1] = b;
 	test.v[0x2] = a;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 0);
 	assert!(test.v[0x1] == a - b);
 }
@@ -285,7 +285,7 @@ fn shift_vx_left() {
 	let a = 1;
 	test.v[0x1] = a;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0xF] == 0);
 	assert!(test.v[0x1] == a << 1);	
 }
@@ -298,14 +298,14 @@ fn skip_if_vx_isnt_vy() {
 	test.v[0x1] = 1;
 	test.v[0x2] = 2;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.v[0x1] = 1;
 	test.v[0x2] = 1;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 }
 
@@ -315,7 +315,7 @@ fn set_i_to_nnn() {
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xA1, 0x23];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.index == 0x123);
 }
 
@@ -326,7 +326,7 @@ fn jump_to_nnn_plus_v0() {
 	let rom = [0xB1, 0x23];
 	test.v[0] = 2;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x125);	
 }
 
@@ -337,7 +337,7 @@ fn set_vx_to_rand_and_nn() {
 	let rom = [0xC1, 0x23];
 	test.v[1] = 2;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[1] < 0xFF);
 }
 
@@ -350,7 +350,7 @@ fn draw_sprite() {
 	test.v[2] = 5;
 	test.index = 0x204;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.graphics[4 + 5 * 64] == 1);
 	assert!(test.graphics[5 + 5 * 64] == 0);
 	assert!(test.graphics[6 + 5 * 64] == 1);
@@ -358,7 +358,7 @@ fn draw_sprite() {
 	assert!(test.graphics[5 + 6 * 64] == 1);
 
 	test.pc = 0x200;
-	test.cycle();
+	test.run_cycle();
 	assert!(test.graphics[4 + 5 * 64] == 0);
 	assert!(test.graphics[5 + 5 * 64] == 0);
 	assert!(test.graphics[6 + 5 * 64] == 0);
@@ -370,7 +370,7 @@ fn draw_sprite() {
 	test.v[2] = 31;
 	test.index = 0x204;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.graphics[63 + 31 * 64] == 1);
 	assert!(test.graphics[0 + 31 * 64] == 0);
 	assert!(test.graphics[1 + 31 * 64] == 1);
@@ -386,14 +386,14 @@ fn skip_if_key_is_pressed() {
 	test.v[1] = 0xA;
 	test.keys[0xA] = 1;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.v[1] = 0xA;
 	test.keys[0xA] = 0;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 }
 
@@ -405,14 +405,14 @@ fn skip_if_key_isnt_pressed() {
 	test.v[1] = 0xA;
 	test.keys[0xA] = 0;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x204);
 
 	test = ::cpu::Cpu::new();
 	test.v[1] = 0xA;
 	test.keys[0xA] = 1;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.pc == 0x202);
 }
 
@@ -423,7 +423,7 @@ fn set_vx_to_delay_timer() {
 	let rom = [0xF2, 0x07];
 	test.delay_timer = 0xF1;
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[2] == 0xF1);
 }
 
@@ -433,7 +433,7 @@ fn wait_on_keypress(){
 	let mut test = ::cpu::Cpu::new();
 	let rom = [0xF2, 0x0A];
 	load_vec(&mut test, rom);
-	test.cycle();
+	test.run_cycle();
 	assert!(test.wait_register == 2);
 	assert!(test.is_waiting());
 }
@@ -455,7 +455,7 @@ fn fill_v0_to_vx_from_memory() {
 	let rom = [0xF3, 0x65, 0x12, 0x34, 0x56, 0x78];
 	load_vec(&mut test, rom);
 	test.index = 0x202;
-	test.cycle();
+	test.run_cycle();
 	assert!(test.v[0] == 0x12);
 	assert!(test.v[1] == 0x34);
 	assert!(test.v[2] == 0x56);
@@ -475,7 +475,7 @@ fn loop_0_to_255(b: &mut Bencher) {
 	b.iter(|| {
 		test.pc = 0x200;
 		while test.pc != 0x208 {
-			test.cycle();
+			test.run_cycle();
 		}
 	} );
 }
@@ -490,6 +490,6 @@ fn draw_sprite_bench(b: &mut Bencher) {
 	load_vec(&mut test, rom);
 	b.iter(|| {
 		test.pc = 0x200;
-		test.cycle();
+		test.run_cycle();
 	});
 }
