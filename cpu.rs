@@ -105,10 +105,17 @@ impl Cpu {
  
 	pub fn load(&mut self, filename: &String) { 	 
 		let f = &Path::new(filename.to_string());
-		let mut r = File::open(f);
+		let mut r = match File::open(f) {
+			Ok(s) => s,
+			Err(_) => panic!("Couldn't open file")
+		};
 		let mut i = 0x200;
-		for byte in r.bytes() {
-			self.memory[i] = byte.unwrap();
+		let bytes = match r.read_to_end() {
+			Ok(s) => s,
+			Err(_) => panic!("Couldn't read file")
+		};
+		for byte in bytes.iter() {
+			self.memory[i] = *byte;
 			i += 1;
 		}
 	}
