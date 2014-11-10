@@ -26,7 +26,7 @@ fn clear_screen() {
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.draw_flag == true);
-	assert!(test.graphics == [0, ..64 * 32]);
+	assert!(test.graphics.as_slice() == [0, ..64 * 32]);
 }
 
 #[test]
