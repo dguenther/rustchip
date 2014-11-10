@@ -137,15 +137,15 @@ impl Cpu {
 		if self.draw_flag {
 			let img = match Image::create_from_pixels(64, 32, gfx.as_slice()) {
 				Some(s) => s,
-				None => fail!("Couldn't create image from pixel array")
+				None => panic!("Couldn't create image from pixel array")
 			};
 			let tex = match Texture::new_from_image(&img) {
 				Some(s) => s,
-				None => fail!("Couldn't create texture from image")
+				None => panic!("Couldn't create texture from image")
 			};
 			let mut sprite = match Sprite::new_with_texture(&tex) {
 				Some(s) => s,
-				None => fail!("Couldn't create sprite from texture")
+				None => panic!("Couldn't create sprite from texture")
 			};
 			sprite.scale2f(10f32, 10f32);
 			window.clear(&Color::black());
@@ -199,7 +199,7 @@ impl Cpu {
 				self.pc = self.stack[self.sp as uint];
 				debug!("Return to {}", self.pc);
 			}
-			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ fail!("Opcode 0NNN not implemented") }
+			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ panic!("Opcode 0NNN not implemented") }
 			(1, _, _, _) => { 
 				/* Jumps to address NNN */
 				self.pc = self.opcode & 0x0FFF;
@@ -380,7 +380,7 @@ impl Cpu {
 				}
 				self.pc += 2;
 			}
-			_ => fail!("Unknown instruction")
+			_ => panic!("Unknown instruction")
 		}
 
 		// Update timers

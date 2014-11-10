@@ -22,14 +22,14 @@ fn start(argc: int, argv: *const *const u8) -> int {
 fn main() {
     let arg_list = args();
     if arg_list.len() <= 1 {
-        fail!("You must pass in a ROM for rustchip to read.");
+        panic!("You must pass in a ROM for rustchip to read.");
     }
 
     // Create the window of the application
     let setting = ContextSettings::default();
     let mut window = match RenderWindow::new(VideoMode::new_init(640, 320, 32), "rustchip", DefaultStyle, &setting) {
         Some(window) => window,
-        None => fail!("Cannot create a new Render Window.")
+        None => panic!("Cannot create a new Render Window.")
     };
     window.set_framerate_limit(60);
 	let mut c8 = cpu::Cpu::new();
