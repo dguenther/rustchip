@@ -21,19 +21,19 @@ fn load_vec(cpu: &mut ::cpu::Cpu, data: &[u8]) {
 fn clear_screen() {
 	// 0x00E0
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x00, 0xE0];
+	let rom = &[0x00, 0xE0];
 	test.graphics = [1, ..64 * 32];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.draw_flag == true);
-	assert!(test.graphics.as_slice() == [0, ..64 * 32]);
+	assert!(test.graphics.as_slice() == &[0, ..64 * 32]);
 }
 
 #[test]
 fn return_from_subroutine() {
 	// 0x00EE
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x00, 0xEE];
+	let rom = &[0x00, 0xEE];
 	test.sp = 1;
 	test.stack[0] = 0x234;
 	load_vec(&mut test, rom);
@@ -45,7 +45,7 @@ fn return_from_subroutine() {
 fn jump_to_nnn() {
 	// 0x1NNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x12, 0x05, 0x11, 0x22, 0x33, 0x44, 0x55];
+	let rom = &[0x12, 0x05, 0x11, 0x22, 0x33, 0x44, 0x55];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.pc == 0x205);
@@ -55,7 +55,7 @@ fn jump_to_nnn() {
 fn call_subroutine_at_nnn() {
 	// 0x2NNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x22, 0x34];
+	let rom = &[0x22, 0x34];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.sp == 1);
@@ -67,7 +67,7 @@ fn call_subroutine_at_nnn() {
 fn skip_if_vx_is_nn() {
 	// 0x3xNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x31, 0x20];
+	let rom = &[0x31, 0x20];
 	test.v[0x1] = 0x20;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -84,7 +84,7 @@ fn skip_if_vx_is_nn() {
 fn skip_if_vx_isnt_nn() {
 	// 0x4xNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x41, 0x20];
+	let rom = &[0x41, 0x20];
 	test.v[0x1] = 0x20;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -101,7 +101,7 @@ fn skip_if_vx_isnt_nn() {
 fn skip_if_vx_is_vy() {
 	// 0x5xy0
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x51, 0x20];
+	let rom = &[0x51, 0x20];
 	test.v[0x1] = 1;
 	test.v[0x2] = 2;
 	load_vec(&mut test, rom);
@@ -120,7 +120,7 @@ fn skip_if_vx_is_vy() {
 fn set_v_to_nn() {
 	// 0x6xNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x61, 0x11];
+	let rom = &[0x61, 0x11];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.v[0x1] == 0x11);
@@ -130,7 +130,7 @@ fn set_v_to_nn() {
 fn add_nn_to_vx() {
 	// 0x7xNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x71, 0x11];
+	let rom = &[0x71, 0x11];
 	test.v[0x1] = 0x22;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -143,7 +143,7 @@ fn set_vx_to_vy() {
 	let a = 5;
 	let b = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x20];
+	let rom = &[0x81, 0x20];
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
@@ -157,7 +157,7 @@ fn set_vx_to_vx_or_vy() {
 	let a = 5;
 	let b = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x21];
+	let rom = &[0x81, 0x21];
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
@@ -171,7 +171,7 @@ fn set_vx_to_vx_and_vy() {
 	let a = 5;
 	let b = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x22];
+	let rom = &[0x81, 0x22];
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
@@ -185,7 +185,7 @@ fn set_vx_to_vx_xor_vy() {
 	let a = 5;
 	let b = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x23];
+	let rom = &[0x81, 0x23];
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
@@ -199,7 +199,7 @@ fn add_vy_to_vx() {
 	let a: u8 = 5;
 	let b: u8 = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x24];
+	let rom = &[0x81, 0x24];
 	test.v[1] = a;
 	test.v[2] = b;
 	load_vec(&mut test, rom);
@@ -224,7 +224,7 @@ fn subtract_vy_from_vx() {
 	let a: u8 = 5;
 	let b: u8 = 6;
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x25];
+	let rom = &[0x81, 0x25];
 	test.v[1] = b;
 	test.v[2] = a;
 	load_vec(&mut test, rom);
@@ -245,7 +245,7 @@ fn subtract_vy_from_vx() {
 fn shift_vx_right() {
 	// 0x8xN6
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x06];
+	let rom = &[0x81, 0x06];
 	let a = 1;
 	test.v[0x1] = a;
 	load_vec(&mut test, rom);
@@ -258,7 +258,7 @@ fn shift_vx_right() {
 fn set_vx_to_vy_minus_vx() {
 	// 0x8xN7
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x27];
+	let rom = &[0x81, 0x27];
 	let a = 1;
 	let b = 2;
 	test.v[0x1] = a;
@@ -281,7 +281,7 @@ fn set_vx_to_vy_minus_vx() {
 fn shift_vx_left() {
 	// 0x8xNE
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x81, 0x0E];
+	let rom = &[0x81, 0x0E];
 	let a = 1;
 	test.v[0x1] = a;
 	load_vec(&mut test, rom);
@@ -294,7 +294,7 @@ fn shift_vx_left() {
 fn skip_if_vx_isnt_vy() {
 	// 0x9xy0
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x91, 0x20];
+	let rom = &[0x91, 0x20];
 	test.v[0x1] = 1;
 	test.v[0x2] = 2;
 	load_vec(&mut test, rom);
@@ -313,7 +313,7 @@ fn skip_if_vx_isnt_vy() {
 fn set_i_to_nnn() {
 	// 0xANNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xA1, 0x23];
+	let rom = &[0xA1, 0x23];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.index == 0x123);
@@ -323,7 +323,7 @@ fn set_i_to_nnn() {
 fn jump_to_nnn_plus_v0() {
 	// 0xBNNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xB1, 0x23];
+	let rom = &[0xB1, 0x23];
 	test.v[0] = 2;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -334,7 +334,7 @@ fn jump_to_nnn_plus_v0() {
 fn set_vx_to_rand_and_nn() {
 	// 0xCNNN
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xC1, 0x23];
+	let rom = &[0xC1, 0x23];
 	test.v[1] = 2;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -345,7 +345,7 @@ fn set_vx_to_rand_and_nn() {
 fn draw_sprite() {
 	// 0xDxyh
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
+	let rom = &[0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
 	test.v[1] = 4;
 	test.v[2] = 5;
 	test.index = 0x204;
@@ -382,7 +382,7 @@ fn draw_sprite() {
 fn skip_if_key_is_pressed() {
 	// 0xEx9E
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xE1, 0x9E];
+	let rom = &[0xE1, 0x9E];
 	test.v[1] = 0xA;
 	test.keys[0xA] = 1;
 	load_vec(&mut test, rom);
@@ -401,7 +401,7 @@ fn skip_if_key_is_pressed() {
 fn skip_if_key_isnt_pressed() {
 	// 0xExA1
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xE1, 0xA1];
+	let rom = &[0xE1, 0xA1];
 	test.v[1] = 0xA;
 	test.keys[0xA] = 0;
 	load_vec(&mut test, rom);
@@ -420,7 +420,7 @@ fn skip_if_key_isnt_pressed() {
 fn set_vx_to_delay_timer() {
 	// 0xFx07
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xF2, 0x07];
+	let rom = &[0xF2, 0x07];
 	test.delay_timer = 0xF1;
 	load_vec(&mut test, rom);
 	test.run_cycle();
@@ -431,7 +431,7 @@ fn set_vx_to_delay_timer() {
 fn wait_on_keypress(){
 	// 0xFx0A
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xF2, 0x0A];
+	let rom = &[0xF2, 0x0A];
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.wait_register == 2);
@@ -452,7 +452,7 @@ fn continue_after_wait(){
 fn fill_v0_to_vx_from_memory() {
 	// 0xFx65
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xF3, 0x65, 0x12, 0x34, 0x56, 0x78];
+	let rom = &[0xF3, 0x65, 0x12, 0x34, 0x56, 0x78];
 	load_vec(&mut test, rom);
 	test.index = 0x202;
 	test.run_cycle();
@@ -465,12 +465,12 @@ fn fill_v0_to_vx_from_memory() {
 #[bench]
 fn loop_0_to_255(b: &mut Bencher) {
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0x60, 0x00, // 200: set v0 to 0
-			   0x70, 0x01, // 202: add 1 to v0
-			   0x30, 0xFF, // 204: skip next instruction if v0 is FF
-			   0x12, 0x02, // 206: jump to address 202
-			   0x12, 0x08, // 208: jump to address 0x208
-			  ];
+	let rom = &[0x60, 0x00, // 200: set v0 to 0
+			    0x70, 0x01, // 202: add 1 to v0
+			    0x30, 0xFF, // 204: skip next instruction if v0 is FF
+			    0x12, 0x02, // 206: jump to address 202
+			    0x12, 0x08, // 208: jump to address 0x208
+			   ];
 	load_vec(&mut test, rom);
 	b.iter(|| {
 		test.pc = 0x200;
@@ -483,7 +483,7 @@ fn loop_0_to_255(b: &mut Bencher) {
 #[bench]
 fn draw_sprite_bench(b: &mut Bencher) {
 	let mut test = ::cpu::Cpu::new();
-	let rom = [0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
+	let rom = &[0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
 	test.v[1] = 4;
 	test.v[2] = 5;
 	test.index = 0x204;
