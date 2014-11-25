@@ -2,7 +2,6 @@
 
 #[phase(plugin, link)]
 extern crate log;
-extern crate native;
 extern crate rsfml;
 
 use rsfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
@@ -10,13 +9,14 @@ use rsfml::graphics::RenderWindow;
 use rsfml::window::keyboard;
 
 use std::os::args;
+use std::rt;
 
 mod cpu;
 
 #[cfg(target_os="macos")]
 #[start]
 fn start(argc: int, argv: *const *const u8) -> int {
-    native::start(argc, argv, main)
+    rt::start(argc, argv, main)
 }
 
 fn main() {
