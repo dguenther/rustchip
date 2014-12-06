@@ -42,28 +42,28 @@ fn main() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
                 event::KeyPressed{code, alt, ..} => { 
-                    if code == keyboard::R && alt {
+                    if code == keyboard::Key::R && alt {
                         c8 = cpu::Cpu::new();
                         c8.load(&arg_list[1]);
                     }
                     if c8.is_waiting() {
                         let val = match code {
-                            keyboard::Num1 => 1,
-                            keyboard::Num2 => 2,
-                            keyboard::Num3 => 3,
-                            keyboard::Num4 => 0xC,
-                            keyboard::Q => 4,
-                            keyboard::W => 5,
-                            keyboard::E => 6,
-                            keyboard::R => 0xD,
-                            keyboard::A => 7,
-                            keyboard::S => 8,
-                            keyboard::D => 9,
-                            keyboard::F => 0xE,
-                            keyboard::Z => 0xA,
-                            keyboard::X => 0,
-                            keyboard::C => 0xB,
-                            keyboard::V => 0xF,
+                            keyboard::Key::Num1 => 1,
+                            keyboard::Key::Num2 => 2,
+                            keyboard::Key::Num3 => 3,
+                            keyboard::Key::Num4 => 0xC,
+                            keyboard::Key::Q => 4,
+                            keyboard::Key::W => 5,
+                            keyboard::Key::E => 6,
+                            keyboard::Key::R => 0xD,
+                            keyboard::Key::A => 7,
+                            keyboard::Key::S => 8,
+                            keyboard::Key::D => 9,
+                            keyboard::Key::F => 0xE,
+                            keyboard::Key::Z => 0xA,
+                            keyboard::Key::X => 0,
+                            keyboard::Key::C => 0xB,
+                            keyboard::Key::V => 0xF,
                             _ => -1
                         };
                         if val != -1 {

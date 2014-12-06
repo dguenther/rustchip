@@ -25,8 +25,11 @@ fn clear_screen() {
 	test.graphics = [1, ..64 * 32];
 	load_vec(&mut test, rom);
 	test.run_cycle();
+	// 12/5/2014 this is probably slower, but slices are unstable 
+	for &x in test.graphics.iter() {
+		assert!(x == 0);
+	}
 	assert!(test.draw_flag == true);
-	assert!(test.graphics.as_slice() == &[0, ..64 * 32]);
 }
 
 #[test]

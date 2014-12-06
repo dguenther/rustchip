@@ -165,22 +165,22 @@ impl Cpu {
 	}
 
 	pub fn update_keys(&mut self) {
-		self.keys[1] = keyboard::is_key_pressed(keyboard::Num1) as u8;
-		self.keys[2] = keyboard::is_key_pressed(keyboard::Num2) as u8;
-		self.keys[3] = keyboard::is_key_pressed(keyboard::Num3) as u8;
-		self.keys[0xC] = keyboard::is_key_pressed(keyboard::Num4) as u8;
-		self.keys[4] = keyboard::is_key_pressed(keyboard::Q) as u8;
-		self.keys[5] = keyboard::is_key_pressed(keyboard::W) as u8;
-		self.keys[6] = keyboard::is_key_pressed(keyboard::E) as u8;
-		self.keys[0xD] = keyboard::is_key_pressed(keyboard::R) as u8;
-		self.keys[7] = keyboard::is_key_pressed(keyboard::A) as u8;
-		self.keys[8] = keyboard::is_key_pressed(keyboard::S) as u8;
-		self.keys[9] = keyboard::is_key_pressed(keyboard::D) as u8;
-		self.keys[0xE] = keyboard::is_key_pressed(keyboard::F) as u8;
-		self.keys[0xA] = keyboard::is_key_pressed(keyboard::Z) as u8;
-		self.keys[0] = keyboard::is_key_pressed(keyboard::X) as u8;
-		self.keys[0xB] = keyboard::is_key_pressed(keyboard::C) as u8;
-		self.keys[0xF] = keyboard::is_key_pressed(keyboard::V) as u8;
+		self.keys[1] = keyboard::is_key_pressed(keyboard::Key::Num1) as u8;
+		self.keys[2] = keyboard::is_key_pressed(keyboard::Key::Num2) as u8;
+		self.keys[3] = keyboard::is_key_pressed(keyboard::Key::Num3) as u8;
+		self.keys[0xC] = keyboard::is_key_pressed(keyboard::Key::Num4) as u8;
+		self.keys[4] = keyboard::is_key_pressed(keyboard::Key::Q) as u8;
+		self.keys[5] = keyboard::is_key_pressed(keyboard::Key::W) as u8;
+		self.keys[6] = keyboard::is_key_pressed(keyboard::Key::E) as u8;
+		self.keys[0xD] = keyboard::is_key_pressed(keyboard::Key::R) as u8;
+		self.keys[7] = keyboard::is_key_pressed(keyboard::Key::A) as u8;
+		self.keys[8] = keyboard::is_key_pressed(keyboard::Key::S) as u8;
+		self.keys[9] = keyboard::is_key_pressed(keyboard::Key::D) as u8;
+		self.keys[0xE] = keyboard::is_key_pressed(keyboard::Key::F) as u8;
+		self.keys[0xA] = keyboard::is_key_pressed(keyboard::Key::Z) as u8;
+		self.keys[0] = keyboard::is_key_pressed(keyboard::Key::X) as u8;
+		self.keys[0xB] = keyboard::is_key_pressed(keyboard::Key::C) as u8;
+		self.keys[0xF] = keyboard::is_key_pressed(keyboard::Key::V) as u8;
 	}
 
 	pub fn run_cycle(&mut self) {
