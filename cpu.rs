@@ -60,15 +60,15 @@ impl Cpu {
 			index: 0,
 			sp: 0,
 
-			graphics: [0, ..64 * 32],
-			stack: [0, ..16],
-			v: [0, ..16],
-			memory: [0, ..4096],
+			graphics: [0; 64 * 32],
+			stack: [0; 16],
+			v: [0; 16],
+			memory: [0; 4096],
 
 			delay_timer: 0,
 			sound_timer: 0,
 
-			keys: [0, ..16],
+			keys: [0; 16],
 
 			draw_flag: false,
 			wait_flag: false,
@@ -138,7 +138,8 @@ impl Cpu {
 			};
 			// SFML takes RGBA, but we only want to display black or white,
 			// (all 255 or all 0) so we'll just repeat the same value 4 times
-			gfx.grow(4, value);
+			let len = gfx.len();
+			gfx.resize(len + 4, value);
 		}
 
 		if self.draw_flag {
@@ -191,12 +192,17 @@ impl Cpu {
 		let op_tuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
 						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
 
-		debug!("{}", op_tuple);
+		// Tuples can only be accessed by pattern matching
+		match op_tuple {
+			(a, b, c, d) => {
+				debug!("({0}, {1}, {2}, {3})", a, b, c, d);
+			}
+		}
 
 		match op_tuple {
 			(0, 0, 0xE, 0) => {
 				/* Clear screen */
-				self.graphics = [0, ..64 * 32];
+				self.graphics = [0; 64 * 32];
 				self.draw_flag = true;
 				self.pc += 2;
 			}
