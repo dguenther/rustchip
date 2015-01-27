@@ -1,6 +1,4 @@
-#![feature(phase)]
-
-#[phase(plugin, link)]
+#[macro_use]
 extern crate log;
 extern crate rsfml;
 extern crate test;
@@ -22,10 +20,10 @@ fn clear_screen() {
 	// 0x00E0
 	let mut test = ::cpu::Cpu::new();
 	let rom = &[0x00, 0xE0];
-	test.graphics = [1, ..64 * 32];
+	test.graphics = [1; 64 * 32];
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	// 12/5/2014 this is probably slower, but slices are unstable 
+	// 12/5/2014 this is probably slower, but slices are unstable
 	for &x in test.graphics.iter() {
 		assert!(x == 0);
 	}
@@ -116,7 +114,7 @@ fn skip_if_vx_is_vy() {
 	test.v[0x2] = 1;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.pc == 0x204);	
+	assert!(test.pc == 0x204);
 }
 
 #[test]
@@ -137,7 +135,7 @@ fn add_nn_to_vx() {
 	test.v[0x1] = 0x22;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.v[0x1] == 0x33);	
+	assert!(test.v[0x1] == 0x33);
 }
 
 #[test]
@@ -151,7 +149,7 @@ fn set_vx_to_vy() {
 	test.v[2] = b;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.v[1] == b);	
+	assert!(test.v[1] == b);
 }
 
 #[test]
@@ -165,7 +163,7 @@ fn set_vx_to_vx_or_vy() {
 	test.v[2] = b;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.v[1] == a | b);	
+	assert!(test.v[1] == a | b);
 }
 
 #[test]
@@ -179,7 +177,7 @@ fn set_vx_to_vx_and_vy() {
 	test.v[2] = b;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.v[1] == a & b);	
+	assert!(test.v[1] == a & b);
 }
 
 #[test]
@@ -193,7 +191,7 @@ fn set_vx_to_vx_xor_vy() {
 	test.v[2] = b;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.v[1] == a ^ b);	
+	assert!(test.v[1] == a ^ b);
 }
 
 #[test]
@@ -290,7 +288,7 @@ fn shift_vx_left() {
 	load_vec(&mut test, rom);
 	test.run_cycle();
 	assert!(test.v[0xF] == 0);
-	assert!(test.v[0x1] == a << 1);	
+	assert!(test.v[0x1] == a << 1);
 }
 
 #[test]
@@ -330,7 +328,7 @@ fn jump_to_nnn_plus_v0() {
 	test.v[0] = 2;
 	load_vec(&mut test, rom);
 	test.run_cycle();
-	assert!(test.pc == 0x125);	
+	assert!(test.pc == 0x125);
 }
 
 #[test]
@@ -448,7 +446,7 @@ fn continue_after_wait(){
 	test.wait_register = 2;
 	test.set_wait_register(5);
 	assert!(test.v[2] == 5);
-	assert!(!test.is_waiting());		
+	assert!(!test.is_waiting());
 }
 
 #[test]
