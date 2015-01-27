@@ -185,7 +185,7 @@ impl Cpu {
 
 	pub fn run_cycle(&mut self) {
 		// Fetch Opcode
-		self.opcode = self.memory[self.pc as uint] as u16 << 8 | self.memory[self.pc as uint + 1] as u16;
+		self.opcode = (self.memory[self.pc as uint] as u16) << 8 | self.memory[self.pc as uint + 1] as u16;
 
 		// Decode/Execute Opcode
 		let op_tuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
