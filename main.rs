@@ -1,6 +1,4 @@
-#![feature(phase)]
-
-#[phase(plugin, link)]
+#[macro_use]
 extern crate log;
 extern crate rsfml;
 
@@ -41,7 +39,7 @@ fn main() {
             match window.poll_event() {
                 event::Closed => { window.close()}
                 event::NoEvent => { break }
-                event::KeyPressed{code, alt, ..} => { 
+                event::KeyPressed{code, alt, ..} => {
                     if code == keyboard::Key::R && alt {
                         c8 = cpu::Cpu::new();
                         c8.load(&arg_list[1]);
@@ -74,7 +72,7 @@ fn main() {
                 _ => {}
             }
         }
-        
+
         if !c8.is_waiting() {
     		c8.run_cycle();
             c8.draw(&mut window);
