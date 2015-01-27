@@ -11,12 +11,6 @@ use std::rt;
 
 mod cpu;
 
-#[cfg(target_os="macos")]
-#[start]
-fn start(argc: int, argv: *const *const u8) -> int {
-    rt::start(argc, argv, main)
-}
-
 fn main() {
     let arg_list = args();
     if arg_list.len() <= 1 {
