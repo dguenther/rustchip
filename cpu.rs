@@ -18,10 +18,10 @@ pub struct Cpu {
 	// 0x000 - 0x1FF Interpreter
 	// 0x050 - 0x0A0 Fonts
 	// 0x200 - 0xFFF ROM and RAM
-	pub memory: [u8, ..4096],
-	
+	pub memory: [u8; 4096],
+
 	// Registers
-	pub v: [u8, ..16],
+	pub v: [u8; 16],
 
 	// Index register
 	pub index: u16,
@@ -30,18 +30,18 @@ pub struct Cpu {
 	pub pc: u16,
 
 	// Black and white, 64 x 32 screen
-	pub graphics: [u8, ..64 * 32],
+	pub graphics: [u8; 64 * 32],
 
 	// Timer registers
 	pub delay_timer: u8,
 	pub sound_timer: u8,
 
 	// Stack
-	pub stack: [u16, ..16],
+	pub stack: [u16; 16],
 	pub sp: u16,
 
 	// Keys
-	pub keys: [u8, ..16],
+	pub keys: [u8; 16],
 
 	// emulator flags and values
 	pub draw_flag: bool,
@@ -79,8 +79,8 @@ impl Cpu {
 	}
 
 	fn load_fontset(&mut self) {
-		let fonts: [u8, ..80] =
-		[ 
+		let fonts: [u8; 80] =
+		[
 		  0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 		  0x20, 0x60, 0x20, 0x20, 0x70, // 1
 		  0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -102,8 +102,8 @@ impl Cpu {
 			self.memory[0x050 + i] = fonts[i];
 		}
 	}
- 
-	pub fn load(&mut self, filename: &String) { 	 
+
+	pub fn load(&mut self, filename: &String) {
 		let f = &Path::new(filename.to_string());
 		let mut r = match File::open(f) {
 			Ok(s) => s,
@@ -140,7 +140,7 @@ impl Cpu {
 			// (all 255 or all 0) so we'll just repeat the same value 4 times
 			gfx.grow(4, value);
 		}
-		
+
 		if self.draw_flag {
 			let img = match Image::create_from_pixels(64, 32, gfx.as_slice()) {
 				Some(s) => s,
@@ -186,7 +186,7 @@ impl Cpu {
 	pub fn run_cycle(&mut self) {
 		// Fetch Opcode
 		self.opcode = self.memory[self.pc as uint] as u16 << 8 | self.memory[self.pc as uint + 1] as u16;
-		
+
 		// Decode/Execute Opcode
 		let op_tuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
 						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
@@ -194,33 +194,33 @@ impl Cpu {
 		debug!("{}", op_tuple);
 
 		match op_tuple {
-			(0, 0, 0xE, 0) => { 
-				/* Clear screen */ 
+			(0, 0, 0xE, 0) => {
+				/* Clear screen */
 				self.graphics = [0, ..64 * 32];
 				self.draw_flag = true;
 				self.pc += 2;
 			}
-			(0, 0, 0xE, 0xE) => { 
+			(0, 0, 0xE, 0xE) => {
 				/* Return from subroutine */
 				self.sp -= 1;
 				self.pc = self.stack[self.sp as uint];
 				debug!("Return to {}", self.pc);
 			}
 			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ panic!("Opcode 0NNN not implemented") }
-			(1, _, _, _) => { 
+			(1, _, _, _) => {
 				/* Jumps to address NNN */
 				self.pc = self.opcode & 0x0FFF;
 				debug!("Jump to {}", self.pc);
 			}
-			(2, _, _, _) => { 
-				/* Calls subroutine at NNN */ 
-				self.stack[self.sp as uint] = self.pc + 2; 
-				self.sp += 1; 
+			(2, _, _, _) => {
+				/* Calls subroutine at NNN */
+				self.stack[self.sp as uint] = self.pc + 2;
+				self.sp += 1;
 				self.pc = self.opcode & 0x0FFF;
 				debug!("Call {}", self.pc);
 			}
-			(3, x, _, _) => { 
-				/* Skips next instruction if Vx is NN */ 
+			(3, x, _, _) => {
+				/* Skips next instruction if Vx is NN */
 				if self.v[x] == (self.opcode & 0x00FF) as u8 {
 					self.pc += 4;
 				} else {
@@ -232,16 +232,16 @@ impl Cpu {
 			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if self.v[x] == self.v[y] {self.pc += 4} else {self.pc += 2} }
 			(6, x, _, _) => { /* Sets Vx to NN */ self.v[x] = (self.opcode & 0x00FF) as u8; self.pc += 2 }
 			(7, x, _, _) => { /* Adds NN to Vx (need to set carry?) */ self.v[x] += (self.opcode & 0x00FF) as u8; self.pc += 2 }
-			(8, x, y, 0) => { 
-				/* Sets Vx to Vy */ 
-				self.v[x] = self.v[y]; 
+			(8, x, y, 0) => {
+				/* Sets Vx to Vy */
+				self.v[x] = self.v[y];
 				self.pc += 2;
 				debug!("Set V{} to V{} ({})", x, y, self.v[y]);
 			}
 			(8, x, y, 1) => { /* Sets Vx to Vx OR Vy */ self.v[x] = self.v[x] | self.v[y]; self.pc += 2 }
 			(8, x, y, 2) => { /* Sets Vx to Vx AND Vy */ self.v[x] = self.v[x] & self.v[y]; self.pc += 2 }
-			(8, x, y, 3) => { /* Sets Vx to Vx XOR Vy */ self.v[x] = self.v[x] ^ self.v[y]; self.pc += 2 }					
-			(8, x, y, 4) => { 
+			(8, x, y, 3) => { /* Sets Vx to Vx XOR Vy */ self.v[x] = self.v[x] ^ self.v[y]; self.pc += 2 }
+			(8, x, y, 4) => {
 				/* Adds Vy to Vx */
 				if self.v[y] > 0xFF - self.v[x] {
 					// set carry
@@ -252,7 +252,7 @@ impl Cpu {
 				self.v[x] += self.v[y];
 				self.pc += 2;
 			}
-			(8, x, y, 5) => { 
+			(8, x, y, 5) => {
 				/* Subtracts Vy from Vx */
 				if self.v[x] > self.v[y] {
 					// set borrow
@@ -263,14 +263,14 @@ impl Cpu {
 				self.v[x] -= self.v[y];
 				self.pc += 2;
 			}
-			(8, x, _, 6) => { 
-				/* Shifts Vx right by one */ 
+			(8, x, _, 6) => {
+				/* Shifts Vx right by one */
 				// set VF to least significant bit
 				self.v[0xF] = self.v[x] & 1;
 				self.v[x] = self.v[x] >> 1;
 				self.pc += 2;
 			}
-			(8, x, y, 7) => { /* Sets Vx to Vy minus Vx */ 
+			(8, x, y, 7) => { /* Sets Vx to Vy minus Vx */
 				if self.v[y] > self.v[x] {
 					// set borrow
 					self.v[0xF] = 1;
@@ -280,31 +280,31 @@ impl Cpu {
 				self.v[x] = self.v[y] - self.v[x];
 				self.pc += 2;
 			}
-			(8, x, _, 0xE) => { 
-				/* Shifts Vx left by one */ 
+			(8, x, _, 0xE) => {
+				/* Shifts Vx left by one */
 				// set VF to most significant bit
 		        self.v[0xF] = self.v[x] >> 7;
 		        self.v[x] = self.v[x] << 1;
 		        self.pc += 2;
 			}
-			(9, x, y, 0) => { 
-				/* Skips next instruction if Vx isn't Vy */ 
-				if self.v[x] != self.v[y] { self.pc += 4 } else { self.pc += 2 } 
+			(9, x, y, 0) => {
+				/* Skips next instruction if Vx isn't Vy */
+				if self.v[x] != self.v[y] { self.pc += 4 } else { self.pc += 2 }
 			}
-			(0xA, _, _, _) => { 
-				/* Sets index register to NNN */ 
-				self.index = self.opcode & 0x0FFF; 
-				self.pc += 2; 
+			(0xA, _, _, _) => {
+				/* Sets index register to NNN */
+				self.index = self.opcode & 0x0FFF;
+				self.pc += 2;
 				debug!("Set I to {}", self.index);
 			}
 			(0xB, _, _, _) => { /* Jumps to NNN plus V0 */ self.pc = (self.opcode & 0x0FFF) + (self.v[0] as u16) }
-			(0xC, x, _, _) => { 
+			(0xC, x, _, _) => {
 				/* Sets Vx to a random number and NN */
 				let rand_num: u8 = rand::random();
 				self.v[x] =  rand_num & ((self.opcode & 0x00FF) as u8);
 				self.pc += 2
 			}
-			(0xD, x, y, h) => { 
+			(0xD, x, y, h) => {
 				/* Draws a sprite at (Vx, Vy) with width of 8 and height of N pixels */
 				let mut pixel: u8;
 				self.v[0xF] = 0;
@@ -318,7 +318,7 @@ impl Cpu {
 								self.v[0xF] = 1;
 							}
 							self.graphics[calc] ^= 1;
-						}	
+						}
 					}
 				}
 			  	self.draw_flag = true;
@@ -341,8 +341,8 @@ impl Cpu {
 				}
 			}
 			(0xF, x, 0, 7) => { /* Sets Vx to the value of the delay timer */ self.v[x] = self.delay_timer; self.pc += 2 }
-			(0xF, x, 0, 0xA) => { 
-				/* Wait for a key press, store the value of the key in Vx */ 
+			(0xF, x, 0, 0xA) => {
+				/* Wait for a key press, store the value of the key in Vx */
 				self.wait_flag = true;
 				self.wait_register = x as u8;
 				self.pc += 2;
@@ -350,7 +350,7 @@ impl Cpu {
 			(0xF, x, 1, 5) => { /* Sets delay timer to Vx */ self.delay_timer = self.v[x]; self.pc += 2 }
 			(0xF, x, 1, 8) => { /* Sets sound timer to Vx */ self.sound_timer = self.v[x]; self.pc += 2 }
 			(0xF, x, 1, 0xE) => {
-				/* Adds Vx to I */ 
+				/* Adds Vx to I */
 				if self.v[x] as u16 > 0xFFF - self.index {
 					// set carry (undocumented)
 					self.v[0xF] = 1;
@@ -360,7 +360,7 @@ impl Cpu {
 				self.index += self.v[x] as u16;
 				self.pc += 2;
 			}
-			(0xF, x, 2, 9) => { 
+			(0xF, x, 2, 9) => {
 				/* Sets I to the location of the fontset sprite for the character in Vx */
 				self.index = 0x050 + (self.v[x] as u16 * 5);
 				self.pc += 2;
@@ -373,14 +373,14 @@ impl Cpu {
 				self.memory[self.index as uint + 2] = self.v[x] % 10;
 				self.pc += 2;
 			}
-			(0xF, x, 5, 5) => { 
+			(0xF, x, 5, 5) => {
 				/* Stores V0 to Vx in memory starting at address I */
 				for i in range(0, x + 1) {
 					self.memory[(self.index as uint + i)] = self.v[i];
 				}
 				self.pc += 2;
 			}
-			(0xF, x, 6, 5) => { 
+			(0xF, x, 6, 5) => {
 				/* Fills V0 to Vx from memory starting at address I */
 				for i in range(0, x + 1) {
 					self.v[i] = self.memory[(self.index as uint + i)];
