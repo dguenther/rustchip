@@ -7,7 +7,6 @@ use rsfml::graphics::RenderWindow;
 use rsfml::window::keyboard;
 
 use std::os::args;
-use std::rt;
 
 mod cpu;
 
