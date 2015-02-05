@@ -1,0 +1,9 @@
+[package]
+
+name = "rustchip"
+version = "0.1.0"
+authors = ["Derek Guenther <dguenther9@gmail.com>"]
+
+[dependencies.rust-sfml]
+
+git = "https://github.com/jeremyletang/rust-sfml.git"

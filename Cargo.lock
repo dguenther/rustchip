@@ -1,0 +1,12 @@
+[root]
+name = "rustchip"
+version = "0.1.0"
+dependencies = [
+ "rust-sfml 0.9.0 (git+https://github.com/jeremyletang/rust-sfml.git)",
+]
+
+[[package]]
+name = "rust-sfml"
+version = "0.9.0"
+source = "git+https://github.com/jeremyletang/rust-sfml.git#06eb54b78de8afe024c77fc568015c940918e142"
+
