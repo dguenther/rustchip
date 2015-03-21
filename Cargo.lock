@@ -6,7 +6,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "libc"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "log"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "rand"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rust-sfml"
 version = "0.9.0"
-source = "git+https://github.com/jeremyletang/rust-sfml.git#06eb54b78de8afe024c77fc568015c940918e142"
+source = "git+https://github.com/jeremyletang/rust-sfml.git#0538f4d7b037fda1a75f35bd67a920391fd66b9a"
+dependencies = [
+ "rand 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
