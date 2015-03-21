@@ -6,15 +6,15 @@ use rsfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
 use rsfml::graphics::RenderWindow;
 use rsfml::window::keyboard;
 
-use std::os::args;
+use std::env::args;
 
 mod cpu;
 
 fn main() {
-    let arg_list = args();
-    if arg_list.len() <= 1 {
+    if args().len() <= 1 {
         panic!("You must pass in a ROM for rustchip to read.");
     }
+    let file_path = args().nth(1).unwrap();
 
     // Create the window of the application
     let setting = ContextSettings::default();
@@ -25,7 +25,7 @@ fn main() {
     window.set_framerate_limit(60);
 	let mut c8 = cpu::Cpu::new();
 
-	c8.load(&arg_list[1]);
+	c8.load(&file_path);
 
     while window.is_open() {
         loop {
@@ -35,7 +35,7 @@ fn main() {
                 event::KeyPressed{code, alt, ..} => {
                     if code == keyboard::Key::R && alt {
                         c8 = cpu::Cpu::new();
-                        c8.load(&arg_list[1]);
+                        c8.load(&file_path);
                     }
                     if c8.is_waiting() {
                         let val = match code {
