@@ -146,7 +146,7 @@ impl Cpu {
 		}
 
 		if self.draw_flag {
-			let img = match Image::create_from_pixels(64, 32, gfx.as_slice()) {
+			let img = match Image::create_from_pixels(64, 32, &gfx) {
 				Some(s) => s,
 				None => panic!("Couldn't create image from pixel array")
 			};
