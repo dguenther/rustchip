@@ -4,8 +4,9 @@ extern crate rsfml;
 use rsfml::graphics::{Color, Image, RenderWindow, RenderTarget, Sprite, Texture};
 use rsfml::window::keyboard;
 
-use std::old_io::fs::File;
-use std::old_path::Path;
+use std::fs::File;
+use std::io::Read;
+use std::path::Path;
 
 
 pub struct Cpu {
@@ -105,16 +106,17 @@ impl Cpu {
 	}
 
 	pub fn load(&mut self, filename: &String) {
-		let f = &Path::new(filename.to_string());
-		let mut r = match File::open(f) {
-			Ok(s) => s,
+		let path = Path::new(filename);
+		let mut file = match File::open(path) {
+			Ok(handle) => handle,
 			Err(_) => panic!("Couldn't open file")
 		};
 		let mut i = 0x200;
-		let bytes = match r.read_to_end() {
-			Ok(s) => s,
+		let mut bytes: Vec<u8> = vec!();
+		match file.read_to_end(&mut bytes) {
+			Ok(_) => {},
 			Err(_) => panic!("Couldn't read file")
-		};
+		}
 		for byte in bytes.iter() {
 			self.memory[i] = *byte;
 			i += 1;
