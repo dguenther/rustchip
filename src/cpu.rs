@@ -1,3 +1,4 @@
+extern crate rand;
 extern crate rsfml;
 
 use rsfml::graphics::{Color, Image, RenderWindow, RenderTarget, Sprite, Texture};
@@ -5,7 +6,6 @@ use rsfml::window::keyboard;
 
 use std::old_io::fs::File;
 use std::old_path::Path;
-use std::rand;
 
 
 pub struct Cpu {
