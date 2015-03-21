@@ -100,7 +100,7 @@ impl Cpu {
 		  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		  0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 		];
-		for i in 0..79u {
+		for i in 0..79 {
 			self.memory[0x050 + i] = fonts[i];
 		}
 	}
@@ -128,13 +128,13 @@ impl Cpu {
 	}
 
 	pub fn set_wait_register(&mut self, value: u8) {
-		self.v[self.wait_register as uint] = value;
+		self.v[self.wait_register as usize] = value;
 		self.wait_flag = false;
 	}
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
 		let mut gfx: Vec<u8> = Vec::with_capacity(64 * 32 * 4);
-		for i in 0u..(64 * 32) {
+		for i in 0..(64 * 32) {
 			let value = match self.graphics[i] {
 				0 => 0u8,
 				_ => 0xFFu8
@@ -189,11 +189,11 @@ impl Cpu {
 
 	pub fn run_cycle(&mut self) {
 		// Fetch Opcode
-		self.opcode = (self.memory[self.pc as uint] as u16) << 8 | self.memory[self.pc as uint + 1] as u16;
+		self.opcode = (self.memory[self.pc as usize] as u16) << 8 | self.memory[self.pc as usize + 1] as u16;
 
 		// Decode/Execute Opcode
-		let op_tuple = (((self.opcode & 0xF000) >> 12) as uint, ((self.opcode & 0x0F00) >> 8) as uint,
-						((self.opcode & 0x00F0) >> 4) as uint, (self.opcode & 0x000F) as uint);
+		let op_tuple = (((self.opcode & 0xF000) >> 12) as usize, ((self.opcode & 0x0F00) >> 8) as usize,
+						((self.opcode & 0x00F0) >> 4) as usize, (self.opcode & 0x000F) as usize);
 
 		// Tuples can only be accessed by pattern matching
 		match op_tuple {
@@ -212,7 +212,7 @@ impl Cpu {
 			(0, 0, 0xE, 0xE) => {
 				/* Return from subroutine */
 				self.sp -= 1;
-				self.pc = self.stack[self.sp as uint];
+				self.pc = self.stack[self.sp as usize];
 				debug!("Return to {}", self.pc);
 			}
 			(0, _, _, _) => { /* Calls RCA 1802 program at address abc */ panic!("Opcode 0NNN not implemented") }
@@ -223,7 +223,7 @@ impl Cpu {
 			}
 			(2, _, _, _) => {
 				/* Calls subroutine at NNN */
-				self.stack[self.sp as uint] = self.pc + 2;
+				self.stack[self.sp as usize] = self.pc + 2;
 				self.sp += 1;
 				self.pc = self.opcode & 0x0FFF;
 				debug!("Call {}", self.pc);
@@ -240,7 +240,7 @@ impl Cpu {
 			(4, x, _, _) => { /* Skips next instruction if Vx isn't NN */ if self.v[x] != (self.opcode & 0x00FF) as u8 {self.pc += 4} else {self.pc += 2} }
 			(5, x, y, 0) => { /* Skips next instruction if Vx is Vy */ if self.v[x] == self.v[y] {self.pc += 4} else {self.pc += 2} }
 			(6, x, _, _) => { /* Sets Vx to NN */ self.v[x] = (self.opcode & 0x00FF) as u8; self.pc += 2 }
-			(7, x, _, _) => { /* Adds NN to Vx (need to set carry?) */ self.v[x] += (self.opcode & 0x00FF) as u8; self.pc += 2 }
+			(7, x, _, _) => { /* Adds NN to Vx (need to set carry?) */ self.v[x] = self.v[x].wrapping_add((self.opcode & 0x00FF) as u8); self.pc += 2 }
 			(8, x, y, 0) => {
 				/* Sets Vx to Vy */
 				self.v[x] = self.v[y];
@@ -258,7 +258,7 @@ impl Cpu {
 				} else {
 					self.v[0xF] = 0;
 				}
-				self.v[x] += self.v[y];
+				self.v[x] =  self.v[x].wrapping_add(self.v[y]);
 				self.pc += 2;
 			}
 			(8, x, y, 5) => {
@@ -269,7 +269,7 @@ impl Cpu {
 				} else {
 					self.v[0xF] = 0;
 				}
-				self.v[x] -= self.v[y];
+				self.v[x] = self.v[x].wrapping_sub(self.v[y]);
 				self.pc += 2;
 			}
 			(8, x, _, 6) => {
@@ -286,7 +286,7 @@ impl Cpu {
 				} else {
 					self.v[0xF] = 0;
 				}
-				self.v[x] = self.v[y] - self.v[x];
+				self.v[x] = self.v[y].wrapping_sub(self.v[x]);
 				self.pc += 2;
 			}
 			(8, x, _, 0xE) => {
@@ -318,10 +318,10 @@ impl Cpu {
 				let mut pixel: u8;
 				self.v[0xF] = 0;
 				for y_draw in 0..h {
-					pixel = self.memory[(self.index as uint + y_draw)];
+					pixel = self.memory[(self.index as usize + y_draw)];
 					for x_draw in 0..8 {
 						if pixel & (0x80 >> x_draw) != 0 {
-							let calc: uint = (((self.v[x] as int + x_draw as int) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64)) as uint;
+							let calc: usize = (((self.v[x] as isize + x_draw as isize) % 64) + (((self.v[y] as isize + y_draw as isize) % 32) * 64)) as usize;
 							if self.graphics[calc] == 1 {
 								// Collision detection
 								self.v[0xF] = 1;
@@ -335,7 +335,7 @@ impl Cpu {
 			}
 			(0xE, x, 9, 0xE) => {
 				/* Skips next instruction if key in Vx is pressed */
-				if self.keys[self.v[x] as uint] == 1 {
+				if self.keys[self.v[x] as usize] == 1 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -343,7 +343,7 @@ impl Cpu {
 			}
 			(0xE, x, 0xA, 1) => {
 				/* Skips next instruction if key in Vx isn't pressed */
-				if self.keys[self.v[x] as uint] == 0 {
+				if self.keys[self.v[x] as usize] == 0 {
 					self.pc += 4;
 				} else {
 					self.pc += 2;
@@ -377,22 +377,22 @@ impl Cpu {
 			(0xF, x, 3, 3) => {
 				// Stores binary-coded decimal representation of Vx at I, I+1, and I+2
 				// In other words, each digit of the number in a separate memory location
-				self.memory[self.index as uint] = self.v[x] / 100;
-				self.memory[self.index as uint + 1] = (self.v[x] / 10) % 10;
-				self.memory[self.index as uint + 2] = self.v[x] % 10;
+				self.memory[self.index as usize] = self.v[x] / 100;
+				self.memory[self.index as usize + 1] = (self.v[x] / 10) % 10;
+				self.memory[self.index as usize + 2] = self.v[x] % 10;
 				self.pc += 2;
 			}
 			(0xF, x, 5, 5) => {
 				/* Stores V0 to Vx in memory starting at address I */
 				for i in 0..(x + 1) {
-					self.memory[(self.index as uint + i)] = self.v[i];
+					self.memory[(self.index as usize + i)] = self.v[i];
 				}
 				self.pc += 2;
 			}
 			(0xF, x, 6, 5) => {
 				/* Fills V0 to Vx from memory starting at address I */
 				for i in 0..(x + 1) {
-					self.v[i] = self.memory[(self.index as uint + i)];
+					self.v[i] = self.memory[(self.index as usize + i)];
 				}
 				self.pc += 2;
 			}
@@ -631,7 +631,7 @@ mod test {
 		load_vec(&mut test, rom);
 		test.run_cycle();
 		assert!(test.v[0xF] == 1);
-		assert!(test.v[1] == c + d);
+		assert!(test.v[1] == c.wrapping_add(d));
 	}
 
 	#[test]
@@ -654,7 +654,7 @@ mod test {
 		load_vec(&mut test, rom);
 		test.run_cycle();
 		assert!(test.v[0xF] == 0);
-		assert!(test.v[1] == a - b);
+		assert!(test.v[1] == a.wrapping_sub(b));
 	}
 
 	#[test]
@@ -690,7 +690,7 @@ mod test {
 		load_vec(&mut test, rom);
 		test.run_cycle();
 		assert!(test.v[0xF] == 0);
-		assert!(test.v[0x1] == a - b);
+		assert!(test.v[0x1] == a.wrapping_sub(b));
 	}
 
 	#[test]
