@@ -99,7 +99,7 @@ impl Cpu {
 		  0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		  0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 		];
-		for i in range(0, 79u) {
+		for i in 0..79u {
 			self.memory[0x050 + i] = fonts[i];
 		}
 	}
@@ -132,7 +132,7 @@ impl Cpu {
 
 	pub fn draw(&mut self, window: &mut RenderWindow) {
 		let mut gfx: Vec<u8> = Vec::with_capacity(64 * 32 * 4);
-		for i in range(0u, 64 * 32) {
+		for i in 0u..(64 * 32) {
 			let value = match self.graphics[i] {
 				0 => 0u8,
 				_ => 0xFFu8
@@ -315,9 +315,9 @@ impl Cpu {
 				/* Draws a sprite at (Vx, Vy) with width of 8 and height of N pixels */
 				let mut pixel: u8;
 				self.v[0xF] = 0;
-				for y_draw in range(0, h) {
+				for y_draw in 0..h {
 					pixel = self.memory[(self.index as uint + y_draw)];
-					for x_draw in range(0, 8) {
+					for x_draw in 0..8 {
 						if pixel & (0x80 >> x_draw) != 0 {
 							let calc: uint = (((self.v[x] as int + x_draw as int) % 64) + (((self.v[y] as int + y_draw as int) % 32) * 64)) as uint;
 							if self.graphics[calc] == 1 {
@@ -382,14 +382,14 @@ impl Cpu {
 			}
 			(0xF, x, 5, 5) => {
 				/* Stores V0 to Vx in memory starting at address I */
-				for i in range(0, x + 1) {
+				for i in 0..(x + 1) {
 					self.memory[(self.index as uint + i)] = self.v[i];
 				}
 				self.pc += 2;
 			}
 			(0xF, x, 6, 5) => {
 				/* Fills V0 to Vx from memory starting at address I */
-				for i in range(0, x + 1) {
+				for i in 0..(x + 1) {
 					self.v[i] = self.memory[(self.index as uint + i)];
 				}
 				self.pc += 2;
