@@ -2,38 +2,39 @@
 name = "rustchip"
 version = "0.1.0"
 dependencies = [
- "log 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-sfml 0.9.0 (git+https://github.com/jeremyletang/rust-sfml.git)",
 ]
 
 [[package]]
 name = "libc"
-version = "0.1.3"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "log"
-version = "0.2.6"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "rand"
-version = "0.2.1"
+version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "log 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "rust-sfml"
 version = "0.9.0"
-source = "git+https://github.com/jeremyletang/rust-sfml.git#0538f4d7b037fda1a75f35bd67a920391fd66b9a"
+source = "git+https://github.com/jeremyletang/rust-sfml.git#0fdcb9b6f47e6d4762f84d7a80ccf239783a41b6"
 dependencies = [
- "rand 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

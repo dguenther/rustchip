@@ -5,8 +5,8 @@ version = "0.1.0"
 authors = ["Derek Guenther <dguenther9@gmail.com>"]
 
 [dependencies]
-log = "0.2.5"
-rand = "0.2.0"
+log = "0.3.1"
+rand = "0.3.7"
 
 [dependencies.rust-sfml]
 git = "https://github.com/jeremyletang/rust-sfml.git"

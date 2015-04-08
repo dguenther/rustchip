@@ -1,3 +1,6 @@
+#![feature(collections)]
+#![feature(test)]
+
 #[macro_use]
 extern crate log;
 extern crate rsfml;
