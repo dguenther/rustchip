@@ -3,11 +3,11 @@
 
 #[macro_use]
 extern crate log;
-extern crate rsfml;
+extern crate sfml;
 
-use rsfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
-use rsfml::graphics::RenderWindow;
-use rsfml::window::keyboard;
+use sfml::window::{ContextSettings, VideoMode, event, DefaultStyle};
+use sfml::graphics::RenderWindow;
+use sfml::window::keyboard;
 
 use std::env::args;
 

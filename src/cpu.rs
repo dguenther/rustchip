@@ -1,8 +1,8 @@
 extern crate rand;
-extern crate rsfml;
+extern crate sfml;
 
-use rsfml::graphics::{Color, Image, RenderWindow, RenderTarget, Sprite, Texture};
-use rsfml::window::keyboard;
+use sfml::graphics::{Color, Image, RenderWindow, RenderTarget, Sprite, Texture};
+use sfml::window::keyboard;
 
 use std::fs::File;
 use std::io::Read;

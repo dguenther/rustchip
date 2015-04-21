@@ -4,7 +4,7 @@ version = "0.1.0"
 dependencies = [
  "log 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "rust-sfml 0.9.0 (git+https://github.com/jeremyletang/rust-sfml.git)",
+ "sfml 0.9.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -30,9 +30,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-sfml"
-version = "0.9.0"
-source = "git+https://github.com/jeremyletang/rust-sfml.git#0fdcb9b6f47e6d4762f84d7a80ccf239783a41b6"
+name = "sfml"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "libc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
