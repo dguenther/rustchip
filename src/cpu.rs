@@ -419,7 +419,6 @@ mod test {
 
 	extern crate test;
 
-	use super::Cpu;
 	use self::test::Bencher;
 
 	fn load_vec(cpu: &mut ::cpu::Cpu, data: &[u8]) {
