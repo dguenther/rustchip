@@ -6,25 +6,23 @@ A CHIP-8 Emulator written in Rust. Based on the tutorial at http://www.multigest
 Building
 --------
 
-First, you'll need to install the [SFML](http://www.sfml-dev.org/download/sfml/2.0/) and [CSFML](http://www.sfml-dev.org/download/csfml/) libraries. If you're on Linux, you can run the following: 
+First, you'll need to install the [SFML](http://www.sfml-dev.org/download/sfml/2.0/) and [CSFML](http://www.sfml-dev.org/download/csfml/) libraries. If you're using a GNU/Linux distribution that supports PPAs, you can run the following:
 ```
 apt-add-repository ppa:sonkun/sfml-development
 apt-get install libsfml-dev libcsfml-dev
 ```
 
-After that, run `./configure` in the repository root to pull rust-sfml, build it, and move it into the `lib/` directory.
-
-Finally, run `rustc -L lib main.rs` to build the emulator.
+Once you've done that, just run `cargo build`.
 
 Testing
 -------
 
-After running `./configure`, run `rustc -L lib --test test.rs` followed by `./test` to run the test library.
+Tests are found in `src/cpu.rs`. They can be executed by running `cargo test`.
 
 Running
 -------
 
-Run `./main <rompath>` to start the emulator. The CHIP-8 system uses a hex keypad, with keymappings listed below. You can reset the emulator by pressing `ALT+R`.
+Run `cargo run <rompath>` to start the emulator. The CHIP-8 system uses a hex keypad, with keymappings listed below. You can reset the emulator by pressing `ALT+R`.
 
 ###### CHIP-8 Keypad -> Keyboard
 
