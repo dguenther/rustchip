@@ -6,5 +6,5 @@ authors = ["Derek Guenther <dguenther9@gmail.com>"]
 
 [dependencies]
 log = "0.3.1"
-rand = "0.3.7"
+rand = "0.3.8"
 sfml = "0.9.3"
