@@ -419,10 +419,6 @@ impl Cpu {
 #[cfg(test)]
 mod test {
 
-	extern crate test;
-
-	use self::test::Bencher;
-
 	fn load_vec(cpu: &mut ::cpu::Cpu, data: &[u8]) {
 		let mut i = 0x200;
 		for b in data.iter() {
@@ -877,37 +873,5 @@ mod test {
 		assert!(test.v[1] == 0x34);
 		assert!(test.v[2] == 0x56);
 		assert!(test.v[3] == 0x78);
-	}
-
-	#[bench]
-	fn loop_0_to_255(b: &mut Bencher) {
-		let mut test = ::cpu::Cpu::new();
-		let rom = &[0x60, 0x00, // 200: set v0 to 0
-				    0x70, 0x01, // 202: add 1 to v0
-				    0x30, 0xFF, // 204: skip next instruction if v0 is FF
-				    0x12, 0x02, // 206: jump to address 202
-				    0x12, 0x08, // 208: jump to address 0x208
-				   ];
-		load_vec(&mut test, rom);
-		b.iter(|| {
-			test.pc = 0x200;
-			while test.pc != 0x208 {
-				test.run_cycle();
-			}
-		} );
-	}
-
-	#[bench]
-	fn draw_sprite_bench(b: &mut Bencher) {
-		let mut test = ::cpu::Cpu::new();
-		let rom = &[0xD1, 0x22, 0x12, 0x34, 0xA0, 0xC0];
-		test.v[1] = 4;
-		test.v[2] = 5;
-		test.index = 0x204;
-		load_vec(&mut test, rom);
-		b.iter(|| {
-			test.pc = 0x200;
-			test.run_cycle();
-		});
 	}
 }
