@@ -141,8 +141,10 @@ impl Cpu {
 			};
 			// SFML takes RGBA, but we only want to display black or white,
 			// (all 255 or all 0) so we'll just repeat the same value 4 times
-			let len = gfx.len();
-			gfx.resize(len + 4, value);
+			// TODO: Replace with .resize() when collections stabilize
+			for _ in 0..4 {
+				gfx.push(value);
+			}
 		}
 
 		if self.draw_flag {

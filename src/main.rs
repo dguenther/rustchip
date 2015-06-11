@@ -1,4 +1,3 @@
-#![feature(collections)]
 #![feature(test)]
 
 #[macro_use]
